@@ -17,7 +17,7 @@ void	parse(char* filepath) {
 	while (std::getline(file, line)) {
 		std::istringstream	iss(line);
 		std::string			str;
-		
+
 		while (iss >> str) {
 			// remove comments
 			if (str[0] == '#')
@@ -54,6 +54,9 @@ int	main(int argc, char** argv) {
 	} catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
+	// instancie node start et goal
+	// astar(start, goal, h)
+	// print
 
 	return 0;
 
