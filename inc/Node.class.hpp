@@ -6,15 +6,28 @@
 
 # define	INFINITY_F std::numeric_limits<float>::infinity()
 
+# define	UP 1
+# define	DOWN 2
+# define	LEFT 3
+# define	RIGHT 4
+
+struct	coord {
+	int x;
+	int y;
+};
+
 class Node {
 	public:
 		float				_g;
 		float				_h;
 		float				_f;
+		coord				_pos;
+
 		std::vector<int>	_graph;
 		int					_size;
 		Node*				_parent;
-		void				h();
+
+		// void				h();
 
 	private:
 		// Node();
@@ -23,11 +36,17 @@ class Node {
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
-		static bool compare(const Node &a, const Node &b);
+		static bool	compare(const Node &a, const Node &b);
+		bool		isSameState(const Node& other) const;
+		int			index(coord pos);
+		coord		coord(int idx);
 
-		bool	isSameState(const Node& other) const;
+		void		swapGraph(coord a, coord b);
 		std::vector<Node>	getChildren() const;
+
 		std::vector<Node>	buildPath();
+
+		void	h(const Node& goal);
 
 		float	getG() const;
 		float	getH() const;
@@ -37,6 +56,7 @@ class Node {
 		void	setH();
 
 		void	display() const;
+
 };
 
 #endif
