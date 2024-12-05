@@ -1,11 +1,16 @@
 #include "Node.class.hpp"
 
-Node::Node(std::vector<int> graph, size_t size) :	_g(INFINITY_F),
+Node::Node(std::vector<int> graph, std::size_t size) :	_g(INFINITY_F),
 													_h(INFINITY_F),
 													_f(INFINITY_F),
 													_graph(graph), _size(size),
 													_parent(nullptr)
 {}
+
+Node::Node(std::size_t size) : _g(INFINITY_F), _h(0), _f(INFINITY_F), _size(size), _parent(nullptr)
+{
+	
+}
 
 Node::~Node() {}
 
@@ -33,18 +38,18 @@ Node& Node::operator=(const Node& other) {
 }
 
 
-static bool	Node::compare(const Node &a, const Node &b) {
+bool	Node::compare(const Node &a, const Node &b) {
 	return a._f < b._f;
 }
 
 bool	Node::isSameState(const Node& other) const {
-	return this._graph == other._graph;
+	return this->_graph == other._graph;
 }
 
 std::vector<Node>	Node::getChildren() const {
 	std::vector<Node>	children;
 
-	
+
 
 	return children;
 }

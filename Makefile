@@ -2,9 +2,9 @@ NAME		=	n_puzzle
 CXX			=	c++
 FLAGS		=	-Wall -Wextra -Werror -O3
 
-SRCS		=	./src/main.cpp
+SRCS		=	./src/main.cpp ./src/Node.class.cpp
 HEADERS		=	-I ./inc
-LIBS		=	
+LIBS		=
 
 OBJS		=	$(SRCS:.cpp=.o)
 

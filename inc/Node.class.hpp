@@ -15,10 +15,11 @@ class Node {
 		int					_size;
 		Node*				_parent;
 		void				h();
+		Node(std::vector<int> graph, std::size_t size);
+		Node(std::size_t size);
 
 	private:
 		// Node();
-		Node(std::vector<int> graph, size_t size);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
@@ -33,8 +34,8 @@ class Node {
 		float	getH() const;
 		float	getF() const;
 
-		void	setG();
-		void	setH();
+		void	setG(float value);
+		void	setF(float value);
 
 		void	display() const;
 };
