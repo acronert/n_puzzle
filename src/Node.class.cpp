@@ -15,7 +15,6 @@ Node::Node(const Node& other) {
 	_f = other._f;
 	_graph = other._graph;
 	_size = other._size;
-
 	_parent = other._parent;
 }
 
@@ -32,38 +31,93 @@ Node& Node::operator=(const Node& other) {
 	return *this;
 }
 
+int	idx(int i, int j, int size)
+{
+	return (i*size + j);
+}
+
+std::vector<int>	build_goal(std::size_t size)
+{
+	int square = size * size;
+	std::vector<int> inputs(square,0);
+
+	int	top = 0;
+	int bottom = size - 1;
+	int	left = 0;
+	int right = size -1;
+	int	k = 1;
+	while (k <  square)
+	{
+		for (int i = left; i<= right; i++){
+			inputs[idx(top, i, size)] = k % square;
+			k++;
+		}
+		top++;
+		for (int j = top; j<= bottom; j++)
+		{
+			inputs[idx(j, right, size)] = k % square;
+			k++;
+		}
+		right--;
+		if (top < bottom)
+		{
+			for (int i = right; i >= left; i--)
+			{
+				inputs[idx(bottom,i,size)] = k % square;
+				k++;
+			}
+			bottom--;
+
+		}
+		if (left < right)
+		{
+			for (int i = bottom; i >= top; i--)
+			{
+				inputs[idx(i, left, size)] = k % square;
+				k++;
+			}
+			left++;
+
+		}
+}
+	return inputs;
+}
+
+Node::Node(std::size_t size) : _g(INFINITY_F),
+													_h(INFINITY_F),
+													_f(INFINITY_F),
+													_size(size),
+													_parent(nullptr)
+{
+	this->_graph = build_goal(size);
+}
 
 
 
-static bool	Node::compare(const Node &a, const Node &b) {
+bool	Node::compare(const Node &a, const Node &b) {
 	return a._f < b._f;
 }
 
 bool	Node::isSameState(const Node& other) const {
-	return this._graph == other._graph;
+	return this->_graph == other._graph;
 }
 
-int		Node::index(coord pos) {
-	return x + y * _size;
+int		Node::index(s_coord pos) {
+	return pos.x + pos.y * _size;
 }
 
-coord	Node::coord(int idx) {
-	return { idx % _size, idx / _size };
-}
 
-void	Node::swapGraph(coord a, coord b) {
-	std::swap(_grap[index(a)], _grap[index(b)]);
+void	Node::swapGraph(s_coord a, s_coord b) {
+	std::swap(_graph[index(a)], _graph[index(b)]);
 }
 
 std::vector<Node>	Node::getChildren() const {
 	std::vector<Node>	children;
 
+	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
-
-	const coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
-
-	for (const coord& offset : directions) {
-		coord dest = { _pos.x + offset.x, _pos.y + offset.y };
+	for (const s_coord& offset : directions) {
+		s_coord dest = { _pos.x + offset.x, _pos.y + offset.y };
 
 		// if out of range, continue
 		if (dest.x < 0 || dest.x >= _size || dest.y < 0 || dest.y >= _size)
@@ -72,64 +126,64 @@ std::vector<Node>	Node::getChildren() const {
 		// else, create child
 		Node	child(*this);
 
-		child.swapGraph(child._pos, dest);
+		child.swapGraph(this->_pos, dest);
 		child._g++;
 		child._pos = dest;
-		child._parent = this;
+		child._parent = (Node *)this;
 
 		children.push_back(child);
 	}
 	return children;
 }
 
-std::vector<Node>	Node::buildPath() {
-
-}
+// std::vector<Node>	Node::buildPath() {
+// 	return;
+// }
 
 
 
 
 
 // Check number of correctly placed tiles
-void	Node::h(const Node& goal) {
-	float	new_h = 0;
-
-	for (int i = 0; i < this._graph.size(); i++) {
-		if (!this._graph[i])
-			continue;
-		else if (this._graph[i] != goal._graph[i])
-			new_h += 1;
-	}
-	this._h = new_h;
-}
+// void	Node::h(const Node& goal) {
+// 	float	new_h = 0;
+// 	int graph_size = (int) this->_graph.size();
+// 	for (int i = 0; i < graph_size; i++) {
+// 		if (!this->_graph[i])
+// 			continue;
+// 		else if (this->_graph[i] != goal._graph[i])
+// 			new_h += 1;
+// 	}
+// 	this->_h = new_h;
+// }
 
 
 
 
 // Check sum of distances between tiles and their goals
-float	distance(int a, int b) {
-	coord	a_pos = coord(a);
-	coord	b_pos = coord(b);
-
-	return abs(a_pos.x - b_pos.x) + abs(a_pos.y - b_pos.y);
+int	Node::distance(int a, int b) {
+	s_coord	a_pos = {a % _size, a / _size };
+	s_coord	b_pos = {b % _size, b / _size};
+	return std::abs(a_pos.x - b_pos.x) + std::abs(a_pos.y - b_pos.y);
 }
 
 void	Node::h(const Node& goal) {
 	float	new_h = 0;
 
-	for (int src = 0;src < this._graph.size();src++) {
-		if (!this._graph[src])
+	int graph_size = (int)this->_graph.size();
+	for (int src = 0;src < graph_size ;src++) {
+		if (!this->_graph[src])
 			continue;
 		// calculate distance between tile and its goal
 		int dest = 0;
-		for ( ; dest < this._graph.size(); dest++) {
-			if (goal._graph[dest] == this._graph[i])
+		for ( ; dest < graph_size; dest++) {
+			if (goal._graph[dest] == this->_graph[src])
 				break;
 		}
 		new_h += distance(src, dest);
 	}
 
-	this._h = new_h;
+	this->_h = new_h;
 }
 
 
@@ -139,15 +193,16 @@ float	Node::getF() const { return _f; }
 void	Node::setG(float value) { _g = value; }
 void	Node::setF(float value) { _f = value; }
 
-void	Node::display() const {
+void	Node::display() {
 	std::cout << "_g = " << _g << std::endl;
 	std::cout << "_h = " << _h << std::endl;
 	std::cout << "_f = " << _f << std::endl;
 	std::cout << "_pos = " << _pos.x << _pos.y << std::endl;
 
-	for (int y = 0; y++ ; y < _size) {
-		for (int x = 0; x++ ; x < _size) {
-			std::cout << this._graph[index(x, y)] << " ";
+	for (int y = 0; y < _size; y++) {
+		for (int x = 0; x < _size; x++) {
+			s_coord cd = {x,y};
+			std::cout << this->_graph[index(cd)] << " ";
 		}
 		std::cout << std::endl;
 	}

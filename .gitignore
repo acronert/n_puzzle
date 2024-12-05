@@ -1,3 +1,5 @@
 n_puzzle
 *.o
 */*.o
+.vscode/
+
