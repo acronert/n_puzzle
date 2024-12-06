@@ -18,7 +18,7 @@ Node::Node(std::vector<int> graph, std::size_t size) :	_g(INFINITY_F),
 
 Node::~Node() {
 
-	std::cout << "destructor called on adress: " << this << std::endl;
+	//std::cout << "destructor called on adress: " << this << std::endl;
 }
 
 Node::Node(const Node& other) {
@@ -114,24 +114,18 @@ std::vector<int>	build_goal(std::size_t size)
 
 std::vector<Node>	Node::buildPath() {
 	std::vector<Node> path;
-	std::cout << "building Path from: " << this << std::endl;
-	this->display();
 	Node *current = this;
 	while (current != nullptr) {
-		// current.display();
 		path.push_back(*current);
 		current = current->_parent;
-		std::cout << "update ptr to parent: " << current << std::endl;
-		current->display();
-		break;
 	}
 
 	return path;
 }
 
 
-bool	Node::compare(const Node &a, const Node &b) {
-	return a._f < b._f;
+bool	Node::compare(const Node *a, const Node *b) {
+	return a->_f < b->_f;
 }
 
 bool	Node::isSameState(const Node& other) const {
@@ -146,8 +140,8 @@ void	Node::swapGraph(s_coord a, s_coord b) {
 	std::swap(_graph[index(a)], _graph[index(b)]);
 }
 
-std::vector<Node>	Node::getChildren(Node& goal) const {
-	std::vector<Node>	children;
+std::vector<Node*>	Node::getChildren(Node& goal){
+	std::vector<Node*>	children;
 
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
@@ -157,27 +151,21 @@ std::vector<Node>	Node::getChildren(Node& goal) const {
 		// if out of range, continue
 		if (dest.x < 0 || dest.x >= _size || dest.y < 0 || dest.y >= _size)
 			continue;
+		if (this->_parent && this->_parent->_pos.x == dest.x && this->_parent->_pos.y == dest.y)
+			continue;
 
 		// else, create child
-		Node	child = *this;
+		Node	*child = new Node(*this);
 
-		child.swapGraph(this->_pos, dest);
-		child._g++;
-		child.h(goal);
-		child._pos = dest;
-		child._parent = (Node *)this;
+		child->swapGraph(this->_pos, dest);
+		child->_g++;
+		child->h(goal);
+		child->_pos = dest;
+		child->_parent = this;
 
 
 		children.push_back(child);
 	}
-
-	for (std::size_t i = 0; i < children.size(); i++) {
-		std::cout << "child parent = " << children[i]._parent << std::endl;
-		std::cout << "child parent parent = " << children[i]._parent->_parent << std::endl;
-		std::cout << "child = " << &children[i] << std::endl;
-		children[i].display();
-	}
-
 	return children;
 }
 

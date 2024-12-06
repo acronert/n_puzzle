@@ -1,3 +1,5 @@
-2 #lol
-0 2 #lol mdr 
-3 1
+# this is a comment
+3
+3 2 6 #another comment
+1 4 0
+8 7 5

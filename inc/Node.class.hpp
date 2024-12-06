@@ -41,11 +41,11 @@ class Node {
 		void	setF(float value);
 		void	display();
 
-		static bool	compare(const Node &a, const Node &b);
+		static bool	compare(const Node *a, const Node *b);
 
 		bool		isSameState(const Node& other) const;
 		std::vector<Node>	buildPath();
-		std::vector<Node>	getChildren(Node& goal) const;
+		std::vector<Node*>	getChildren(Node& goal);
 
 		void	h(const Node& goal);
 		// void				h();
