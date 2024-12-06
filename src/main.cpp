@@ -73,9 +73,15 @@ int	main(int argc, char** argv) {
 		// astar(start, goal, h)
 		// print
 		Node goal = Node(3);
+		
+		std::cout << "Goal :" << std::endl;
 		goal.display();
+
 		std::vector<int> start_vec = {1,2,3,8,4,0,7,6,5};
 		Node start = Node(start_vec, 3);
+
+		start.setG(0);
+		start.h(goal);
 
 		std::vector<Node> path = astar(start, goal);
 	} catch (const std::exception& e) {

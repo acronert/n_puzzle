@@ -16,7 +16,10 @@ Node::Node(std::vector<int> graph, std::size_t size) :	_g(INFINITY_F),
 	}
 }
 
-Node::~Node() {}
+Node::~Node() {
+
+	std::cout << "destructor called on adress: " << this << std::endl;
+}
 
 Node::Node(const Node& other) {
 	_g = other._g;
@@ -109,17 +112,19 @@ std::vector<int>	build_goal(std::size_t size)
 	return inputs;
 }
 
-
-
 std::vector<Node>	Node::buildPath() {
 	std::vector<Node> path;
-
-	Node current = *this;
-	while (current._parent) {
-		path.push_back(current);
-		current = *(current._parent);
+	std::cout << "building Path from: " << this << std::endl;
+	this->display();
+	Node *current = this;
+	while (current != nullptr) {
+		// current.display();
+		path.push_back(*current);
+		current = current->_parent;
+		std::cout << "update ptr to parent: " << current << std::endl;
+		current->display();
+		break;
 	}
-	path.push_back(current);
 
 	return path;
 }
@@ -137,14 +142,13 @@ int		Node::index(s_coord pos) {
 	return pos.x + pos.y * _size;
 }
 
-
 void	Node::swapGraph(s_coord a, s_coord b) {
 	std::swap(_graph[index(a)], _graph[index(b)]);
 }
 
-std::vector<Node>	Node::getChildren() const {
+std::vector<Node>	Node::getChildren(Node& goal) const {
 	std::vector<Node>	children;
-	
+
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
 	for (const s_coord& offset : directions) {
@@ -155,15 +159,25 @@ std::vector<Node>	Node::getChildren() const {
 			continue;
 
 		// else, create child
-		Node	child(*this);
+		Node	child = *this;
 
 		child.swapGraph(this->_pos, dest);
 		child._g++;
+		child.h(goal);
 		child._pos = dest;
 		child._parent = (Node *)this;
 
+
 		children.push_back(child);
 	}
+
+	for (std::size_t i = 0; i < children.size(); i++) {
+		std::cout << "child parent = " << children[i]._parent << std::endl;
+		std::cout << "child parent parent = " << children[i]._parent->_parent << std::endl;
+		std::cout << "child = " << &children[i] << std::endl;
+		children[i].display();
+	}
+
 	return children;
 }
 
@@ -215,6 +229,7 @@ void	Node::h(const Node& goal) {
 	}
 
 	this->_h = new_h;
+	this->_f = this->_h + this->_g;
 }
 
 
@@ -225,10 +240,6 @@ void	Node::setG(float value) { _g = value; }
 void	Node::setF(float value) { _f = value; }
 
 void	Node::display() {
-	std::cout << "_g = " << _g << std::endl;
-	std::cout << "_h = " << _h << std::endl;
-	std::cout << "_f = " << _f << std::endl;
-	std::cout << "_pos = " << _pos.x << ", " << _pos.y << std::endl;
 
 	for (int y = 0; y < _size; y++) {
 		for (int x = 0; x < _size; x++) {
@@ -237,5 +248,11 @@ void	Node::display() {
 		}
 		std::cout << std::endl;
 	}
+	std::cout << "_g = " << _g << std::endl;
+	std::cout << "_h = " << _h << std::endl;
+	std::cout << "_f = " << _f << std::endl;
+	std::cout << "_pos = " << _pos.x << ", " << _pos.y << std::endl;
+	std::cout << "_parent = " << _parent << std::endl;
+	std::cout << std::endl;
 
 }

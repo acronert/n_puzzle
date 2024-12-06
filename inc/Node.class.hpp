@@ -45,7 +45,7 @@ class Node {
 
 		bool		isSameState(const Node& other) const;
 		std::vector<Node>	buildPath();
-		std::vector<Node>	getChildren() const;
+		std::vector<Node>	getChildren(Node& goal) const;
 
 		void	h(const Node& goal);
 		// void				h();

@@ -1,6 +1,6 @@
 NAME		=	n_puzzle
 CXX			=	c++
-FLAGS		=	-Wall -Wextra -Werror -O3
+FLAGS		=	-Wall -Wextra -Werror -O3 -g3
 
 SRCS		=	./src/main.cpp ./src/Node.class.cpp
 HEADERS		=	-I ./inc/
