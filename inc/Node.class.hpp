@@ -47,6 +47,7 @@ class Node {
 		std::vector<Node>	buildPath();
 		std::vector<Node>	getChildren() const;
 
+		void	h(const Node& goal);
 		// void				h();
 
 	private:
@@ -58,7 +59,6 @@ class Node {
 		void		swapGraph(s_coord a, s_coord b);
 
 
-		void	h(const Node& goal);
 
 
 

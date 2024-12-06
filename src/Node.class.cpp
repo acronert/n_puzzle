@@ -1,11 +1,20 @@
 #include "Node.class.hpp"
 
+std::vector<int>	build_goal(std::size_t size);
+
 Node::Node(std::vector<int> graph, std::size_t size) :	_g(INFINITY_F),
 													_h(INFINITY_F),
 													_f(INFINITY_F),
 													_graph(graph), _size(size),
 													_parent(nullptr)
-{}
+{
+	for (int i = 0; i < (int)_graph.size(); i++) {
+		if (_graph[i] == 0) {
+			_pos = {i % _size, i / _size };
+			break;
+		}
+	}
+}
 
 Node::~Node() {}
 
@@ -15,7 +24,23 @@ Node::Node(const Node& other) {
 	_f = other._f;
 	_graph = other._graph;
 	_size = other._size;
+	_pos = other._pos;
 	_parent = other._parent;
+}
+
+Node::Node(std::size_t size) : _g(INFINITY_F),
+								_h(INFINITY_F),
+								_f(INFINITY_F),
+								_size(size),
+								_parent(nullptr)
+{
+	this->_graph = build_goal(size);
+	for (int i = 0; i < (int)_graph.size(); i++) {
+		if (_graph[i] == 0) {
+			_pos = {i % _size, i / _size };
+			break;
+		}
+	}
 }
 
 Node& Node::operator=(const Node& other) {
@@ -25,6 +50,7 @@ Node& Node::operator=(const Node& other) {
 		_f = other._f;
 		_graph = other._graph;
 		_size = other._size;
+		_pos = other._pos;
 
 		_parent = other._parent;
 	}
@@ -83,15 +109,20 @@ std::vector<int>	build_goal(std::size_t size)
 	return inputs;
 }
 
-Node::Node(std::size_t size) : _g(INFINITY_F),
-													_h(INFINITY_F),
-													_f(INFINITY_F),
-													_size(size),
-													_parent(nullptr)
-{
-	this->_graph = build_goal(size);
-}
 
+
+std::vector<Node>	Node::buildPath() {
+	std::vector<Node> path;
+
+	Node current = *this;
+	while (current._parent) {
+		path.push_back(current);
+		current = *(current._parent);
+	}
+	path.push_back(current);
+
+	return path;
+}
 
 
 bool	Node::compare(const Node &a, const Node &b) {
@@ -113,7 +144,7 @@ void	Node::swapGraph(s_coord a, s_coord b) {
 
 std::vector<Node>	Node::getChildren() const {
 	std::vector<Node>	children;
-
+	
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
 	for (const s_coord& offset : directions) {
@@ -197,7 +228,7 @@ void	Node::display() {
 	std::cout << "_g = " << _g << std::endl;
 	std::cout << "_h = " << _h << std::endl;
 	std::cout << "_f = " << _f << std::endl;
-	std::cout << "_pos = " << _pos.x << _pos.y << std::endl;
+	std::cout << "_pos = " << _pos.x << ", " << _pos.y << std::endl;
 
 	for (int y = 0; y < _size; y++) {
 		for (int x = 0; x < _size; x++) {

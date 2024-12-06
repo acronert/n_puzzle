@@ -69,18 +69,18 @@ int	main(int argc, char** argv) {
 		for (auto num : vec) {
 			std::cout << num << " ";
 		}
+		// instancie node start et goal
+		// astar(start, goal, h)
+		// print
+		Node goal = Node(3);
+		goal.display();
+		std::vector<int> start_vec = {1,2,3,8,4,0,7,6,5};
+		Node start = Node(start_vec, 3);
+
+		std::vector<Node> path = astar(start, goal);
 	} catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;
 	}
-	// instancie node start et goal
-	// astar(start, goal, h)
-	// print
-	Node goal = Node(3);
-	goal.display();
-	std::vector<int> start_vec = {1,2,3,8,4,0,7,6,5};
-	Node start = Node(start_vec, 3);
-
-	std::vector<Node> path = astar(start, goal);
 	return 0;
 }
 
