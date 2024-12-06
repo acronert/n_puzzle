@@ -3,6 +3,11 @@
 # include <fstream>
 # include <vector>
 # include <set>
+#include "Node.class.hpp"
+
+template <class NodeType>
+std::vector<NodeType> astar(NodeType &start, NodeType &goal);
+
 
 std::vector<int>	parse(char* filepath) {
 	std::ifstream file(filepath);
@@ -69,7 +74,12 @@ int	main(int argc, char** argv) {
 	// instancie node start et goal
 	// astar(start, goal, h)
 	// print
+	Node goal = Node(3);
+	goal.display();
+	std::vector<int> start_vec = {1,2,3,8,4,0,7,6,5};
+	Node start = Node(start_vec, 3);
 
+	std::vector<Node> path = astar(start, goal);
 	return 0;
 
 }

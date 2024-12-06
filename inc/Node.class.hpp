@@ -34,12 +34,21 @@ class Node {
 		Node(std::size_t size);
 		~Node();
 
+		float	getG() const;
+		float	getH() const;
+		float	getF() const;
+		void	setG(float value);
+		void	setF(float value);
+		void	display();
+
+		static bool	compare(const Node &a, const Node &b);
+
+
 		// void				h();
 
 	private:
 		// Node();
 
-		static bool	compare(const Node &a, const Node &b);
 		bool		isSameState(const Node& other) const;
 		int			index(s_coord pos);
 
@@ -51,14 +60,7 @@ class Node {
 
 		void	h(const Node& goal);
 
-		float	getG() const;
-		float	getH() const;
-		float	getF() const;
 
-		void	setG(float value);
-		void	setF(float value);
-
-		void	display();
 
 };
 
