@@ -43,20 +43,20 @@ class Node {
 
 		static bool	compare(const Node &a, const Node &b);
 
+		bool		isSameState(const Node& other) const;
+		std::vector<Node>	buildPath();
+		std::vector<Node>	getChildren() const;
 
 		// void				h();
 
 	private:
 		// Node();
 
-		bool		isSameState(const Node& other) const;
 		int			index(s_coord pos);
 
 		int			distance(int a, int b);
 		void		swapGraph(s_coord a, s_coord b);
-		std::vector<Node>	getChildren() const;
 
-		std::vector<Node>	buildPath();
 
 		void	h(const Node& goal);
 

@@ -4,6 +4,7 @@
 # include <vector>
 # include <set>
 #include "Node.class.hpp"
+#include "Astar.hpp"
 
 template <class NodeType>
 std::vector<NodeType> astar(NodeType &start, NodeType &goal);
@@ -81,7 +82,6 @@ int	main(int argc, char** argv) {
 
 	std::vector<Node> path = astar(start, goal);
 	return 0;
-
 }
 
 
