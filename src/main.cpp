@@ -7,8 +7,9 @@
 #include "Astar.hpp"
 #include <random>
 template <class NodeType>
-std::vector<NodeType> astar(NodeType &start, NodeType &goal);
+std::vector<NodeType> astar(NodeType &start);
 
+std::vector<int>	build_goal(std::size_t size);
 
 std::vector<int>	parse(char* filepath) {
 	std::ifstream file(filepath);
@@ -73,28 +74,30 @@ std::vector<int>	random_vec(size_t size)
 int	main(int argc, char** argv) {
 
 	(void)argv;
-	// parse and fill grid
 	if (argc != 2)
 		return -1;
 	try {
-		std::vector<int> vec = parse(argv[1]);
-		// instancie node start et goal
-		// astar(start, goal, h)
-		// print
-		Node *goal = new Node(std::sqrt(vec.size()));
-		std::cout << "Goal :" << std::endl;
-		goal->display();
+		// Initialize
+		std::vector<int> start = parse(argv[1]);
+		int	size = std::sqrt(start.size());
+		std::vector<int> goal = build_goal(size);
 
-		Node *start = new Node(vec, std::sqrt(vec.size()));
+		Node *node = new Node(start, goal, size);
+		node->setG(0);
+		node->h();
+		std::cout << node;
 
-		start->setG(0);
-		start->h(*goal);
+		std::cout << "===== Start =====\n";
+		node->display();
+		std::cout << "=================\n";
 
-		std::vector<Node> path = astar(start, goal);
+		// Execute A*
+		std::vector<Node> path = astar(node);
+
+		// Display Path
 		std::cout << "Path found, displaying: \n";
 		for (auto node = path.rbegin(); node != path.rend(); ++node)
 			node->display();
-
 
 	} catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;

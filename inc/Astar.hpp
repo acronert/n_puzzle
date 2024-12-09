@@ -5,12 +5,12 @@
 #include <algorithm>
 
 template <class NodeType>
-std::vector<NodeType> astar(NodeType *start, NodeType *goal)
+std::vector<NodeType> astar(NodeType *start)
 {
 	std::size_t	max_nodes = 1;
 	int	loop_count = 0;
-	if (!start || !goal){
-		throw std::invalid_argument("Undefined start or goal Node");
+	if (!start){
+		throw std::invalid_argument("Undefined start");
 	}
 	std::vector<NodeType*> openSet;
 	openSet.push_back(start);
@@ -24,7 +24,7 @@ std::vector<NodeType> astar(NodeType *start, NodeType *goal)
 		}
 		NodeType *current = openSet.back();
 		openSet.pop_back();
-		if (current->isSameState(*goal))
+		if (current->isGoal())
 		{
 			std::vector<Node> path = current->buildPath();
 			std::cout << "LOOP COUNT and MAX NODE are: " << loop_count << " " << max_nodes << std::endl;
@@ -32,7 +32,7 @@ std::vector<NodeType> astar(NodeType *start, NodeType *goal)
 			return path;
 		}
 
-		std::vector<NodeType*> children = current->getChildren(*goal);
+		std::vector<NodeType*> children = current->getChildren();
 
 		for (std::size_t i = 0; i < children.size(); i++)
 		{
@@ -40,7 +40,7 @@ std::vector<NodeType> astar(NodeType *start, NodeType *goal)
 			{
 				//if child in openSet compare g scores and keep the lowest one
 				// probably slow, can have a map to check faster, more memory
-				if (children[i]->isSameState(*set) && children[i]->getG() < set->getG())
+				if (children[i]->_graph == set->_graph && children[i]->getG() < set->getG())
 				{
 					*set = *children[i];
 					delete children[i];
