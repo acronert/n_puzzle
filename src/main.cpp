@@ -2,6 +2,8 @@
 # include "Astar.hpp"
 # include "utils.hpp"
 
+
+
 # include <chrono>
 
 int	main(int argc, char** argv) {
@@ -21,10 +23,10 @@ int	main(int argc, char** argv) {
 		node->display();
 		std::cout << "=================\n";
 
-		
+
 		auto start_time = std::chrono::high_resolution_clock::now();
 		// Execute A*
-		std::vector<Node> path = astar(node);
+		std::vector<Node> path = astar<Node, std::vector<int>>(node);
 
 		auto end_time = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);

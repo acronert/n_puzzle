@@ -37,16 +37,18 @@ class Node {
 		float				_f;
 		s_coord				_pos;
 		std::vector<int>	_graph;
-		int					_size;
 		Node*				_parent;
-		std::vector<int>	_goal;
+
+		static int				_size;
+		static std::vector<int>	_goal;
+
 
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
-		int		findDest(int value);
 
 	public:
+
 		// Coplien
 		Node(std::vector<int> graph, std::vector<int> goal, std::size_t size);
 		~Node();
@@ -55,7 +57,7 @@ class Node {
 
 		// Getters
 		float	getSize() const;
-		std::vector<int>	getGraph() const;
+		const std::vector<int>	&getGraph() const;
 		float	getG() const;
 		float	getH() const;
 		float	getF() const;
@@ -65,14 +67,19 @@ class Node {
 		void	setG(float value);
 		void	setF(float value);
 
+		static void	updateNode(Node *old, Node* update);
 
 		std::vector<Node*>	getChildren();
 		std::vector<Node>	buildPath();
-		static bool			compare(const Node *a, const Node *b);
+		using NodePtr = Node*;
+		static bool			compare(const NodePtr &a, const NodePtr &b);
 		void	h();
 		bool	isGoal() const;
 		void	display();
-
+		static	std::vector<int>	get_graph(const NodePtr &a)
+		{
+			return (a->_graph);
+		}
 };
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node);
