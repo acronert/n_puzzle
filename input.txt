@@ -1,11 +1,18 @@
-# This puzzle is unsolvable
-3
-0
+# This puzzle is solvable
 4
-1
-6
-3
-2
-8
-7
-5
+14
+ 2
+ 7
+13
+10
+11
+ 0
+ 4
+15
+ 3
+ 6
+ 9
+12
+ 1
+ 8
+ 5

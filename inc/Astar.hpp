@@ -3,6 +3,7 @@
 
 #include <Node.class.hpp>
 #include <algorithm>
+#include <map>
 #include <heap.hpp>
 #include <heap.tpp>
 
@@ -75,7 +76,9 @@ std::vector<NodeType> astar(NodeType *start)
 		throw std::invalid_argument("Undefined start");
 	}
 	Heap<NodeType*, GraphType> openSet = Heap<NodeType*, GraphType>(&NodeType::get_graph, &NodeType::compare);
+	std::map<GraphType, float>	closeSet;
 	openSet.insert(start);
+	closeSet[start->getGraph()] = start->getF();
 	while (openSet.getSize() > 0)
 	{
 		loop_count++;
@@ -84,6 +87,9 @@ std::vector<NodeType> astar(NodeType *start)
 			max_nodes = openSet.getSize();
 		}
 		NodeType *current = openSet.popHead();
+		std::cout << "========================\n";
+		current->display();
+		std::cout << openSet.getSize() << "\n";
 		if (current->isGoal())
 		{
 			std::vector<Node> path = current->buildPath();
@@ -101,12 +107,28 @@ std::vector<NodeType> astar(NodeType *start)
 			{
 				if (NodeType::compare(children[i], openSet[idx])){
 					openSet.modify(idx, children[i], &Node::updateNode);
+					closeSet[children[i]->getGraph()] = children[i]->getF();
 				}
 				delete children[i];
 				children[i] = NULL;
 			}
-			if (children[i] != NULL){
-				openSet.insert(children[i]);
+			if (children[i] != NULL){ //pas ds openSet
+				if (auto search = closeSet.find(children[i]->getGraph()); search != closeSet.end()) //dans closeSet
+				{
+					if (children[i]->getF() < closeSet[children[i]->getGraph()]) // nouveau score meilleur
+					{
+						openSet.insert(children[i]); //insertion ds openSet
+						closeSet[children[i]->getGraph()] = children[i]->getF(); //modification closeSet
+					}
+					else{
+						delete children[i];
+					}
+				}
+				else{ // jamais vu du tout
+					openSet.insert(children[i]);
+					closeSet[children[i]->getGraph()] = children[i]->getF();
+				}
+
 			}
 
 		}
