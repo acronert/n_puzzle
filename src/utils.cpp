@@ -111,3 +111,16 @@ std::vector<int>	random_vec(std::size_t size)
 	std::shuffle(nums.begin(), nums.end(), g);
 	return nums;
 }
+
+void	replay(std::vector<Node> path) {
+	for (auto node = path.rbegin(); node != path.rend(); ++node) {
+		node->display();
+		usleep(400000);
+
+		for (int i = 0; i < node->getSize() + 4; ++i) {
+			std::cout << "\033[A"    // Move cursor up one line
+					<< "\033[2K"; // Clear the entire line
+		
+		}
+	}
+}

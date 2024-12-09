@@ -184,6 +184,7 @@ void	Node::display() {
 	std::cout << std::endl;
 }
 
+
 // std::ostream&	operator<<(std::ostream& os, const Node& node) {
 // 	int size = node.getSize();
 
