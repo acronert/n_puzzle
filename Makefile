@@ -2,7 +2,7 @@ NAME		=	n_puzzle
 CXX			=	c++
 FLAGS		=	-std=c++17 -Wall -Wextra -Werror -O3 -g3
 
-SRCS		=	./src/main.cpp ./src/Node.class.cpp
+SRCS		=	./src/main.cpp ./src/Node.class.cpp ./src/utils.cpp
 HEADERS		=	-I ./inc/ -I ./cpp_heap/
 
 OBJS		=	$(SRCS:.cpp=.o)

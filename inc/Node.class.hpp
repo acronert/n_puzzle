@@ -7,6 +7,8 @@
 # include <iostream>
 # include <iomanip>
 # include <sstream>
+# include "utils.hpp"
+
 # define	INFINITY_F std::numeric_limits<float>::infinity()
 
 # define RESET		"\033[0m"
@@ -29,23 +31,20 @@ typedef struct	coord {
 
 class Node {
 	private:
+
 		float				_g;
 		float				_h;
 		float				_f;
 		s_coord				_pos;
-
 		std::vector<int>	_graph;
-		int					_size;
+		int				_size;
 		Node*				_parent;
-
 		std::vector<int>	_goal;
 
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
 		int		findDest(int value);
-
-
 
 	public:
 
@@ -55,31 +54,26 @@ class Node {
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
-		std::vector<int>	&getGraph();
-		float				getSize() const;
-		float				getG() const;
-		float				getH() const;
-		float				getF() const;
+		// Getters
+		float	getSize() const;
+		std::vector<int>	getGraph() const;
+		float	getG() const;
+		float	getH() const;
+		float	getF() const;
 
+		// Setters
 		void	setGoal(std::vector<int> goal);
 		void	setG(float value);
 		void	setF(float value);
 
-		static bool	compare(const Node *a, const Node *b);
-
-		void	h();
-		bool				isGoal() const;
-		std::vector<Node>	buildPath();
 
 		std::vector<Node*>	getChildren();
+		std::vector<Node>	buildPath();
+		static bool			compare(const Node *a, const Node *b);
+		void	h();
+		bool	isGoal() const;
 		void	display();
-
-
-
-
 };
-
-
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node);
 
