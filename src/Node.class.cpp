@@ -3,12 +3,8 @@
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
 Node::Node(std::vector<int> graph, std::vector<int> goal, std::size_t size) :
-													_g(INFINITY_F),
-													_h(INFINITY_F),
-													_f(INFINITY_F),
-													_graph(graph), _size(size),
-													_parent(nullptr),
-													_goal(goal)
+	_g(0), _h(0), _f(0),
+	_graph(graph), _size(size), _parent(nullptr), _goal(goal)
 {
 	// Search '0' tile position
 	for (int i = 0; i < (int)_graph.size(); i++) {
@@ -17,6 +13,8 @@ Node::Node(std::vector<int> graph, std::vector<int> goal, std::size_t size) :
 			break;
 		}
 	}
+
+	this->h();
 }
 
 Node::~Node() {
@@ -62,7 +60,9 @@ std::vector<Node*>	Node::getChildren(){
 		if (dest.x < 0 || dest.x >= _size || dest.y < 0 || dest.y >= _size)
 			continue;
 		// if direction is parent
-		if (this->_parent && this->_parent->_pos.x == dest.x && this->_parent->_pos.y == dest.y)
+		if (this->_parent
+			&& this->_parent->_pos.x == dest.x
+			&& this->_parent->_pos.y == dest.y)
 			continue;
 
 		// else, create child
@@ -217,7 +217,7 @@ void	Node::display() {
 
 
 float	Node::getSize() const					{ return _size; }
-std::vector<int>	Node::getGraph() const					{ return _graph; }
+std::vector<int>	Node::getGraph() const		{ return _graph; }
 float	Node::getG() const						{ return _g; }
 float	Node::getH() const						{ return _h; }
 float	Node::getF() const						{ return _f; }
@@ -227,57 +227,3 @@ void	Node::setGoal(std::vector<int> goal)	{ _goal = goal; }
 
 
 
-
-
-
-int	idx(int i, int j, int size)
-{
-	return (i*size + j);
-}
-
-std::vector<int>	build_goal(std::size_t size)
-{
-	int square = size * size;
-	std::vector<int> inputs(square,0);
-
-	int	top = 0;
-	int bottom = size - 1;
-	int	left = 0;
-	int right = size -1;
-	int	k = 1;
-	while (k <  square)
-	{
-		for (int i = left; i<= right; i++){
-			inputs[idx(top, i, size)] = k % square;
-			k++;
-		}
-		top++;
-		for (int j = top; j<= bottom; j++)
-		{
-			inputs[idx(j, right, size)] = k % square;
-			k++;
-		}
-		right--;
-		if (top < bottom)
-		{
-			for (int i = right; i >= left; i--)
-			{
-				inputs[idx(bottom,i,size)] = k % square;
-				k++;
-			}
-			bottom--;
-
-		}
-		if (left < right)
-		{
-			for (int i = bottom; i >= top; i--)
-			{
-				inputs[idx(i, left, size)] = k % square;
-				k++;
-			}
-			left++;
-
-		}
-	}
-	return inputs;
-}
