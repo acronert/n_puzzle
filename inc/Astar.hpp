@@ -101,9 +101,9 @@ std::vector<NodeType> astar(NodeType *start)
 			{
 				if (NodeType::compare(children[i], openSet[idx])){
 					openSet.modify(idx, children[i], &Node::updateNode);
-					delete children[i];
-					children[i] = NULL;
 				}
+				delete children[i];
+				children[i] = NULL;
 			}
 			if (children[i] != NULL){
 				openSet.insert(children[i]);
