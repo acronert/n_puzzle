@@ -84,6 +84,8 @@ std::vector<NodeType> astar(NodeType *start)
 			max_nodes = openSet.getSize();
 		}
 		NodeType *current = openSet.popHead();
+		// current->display();
+		std::cout << "size = " << openSet.getSize() << "\n";
 		if (current->isGoal())
 		{
 			std::vector<Node> path = current->buildPath();
