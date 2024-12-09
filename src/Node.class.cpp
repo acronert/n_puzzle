@@ -171,7 +171,7 @@ void	Node::display() {
 			}
 			if (this->_graph[src] == 0)
 				color = "";
-			
+
 			std::cout << color << std::setw(3) << this->_graph[src] << " " RESET;
 		}
 		std::cout << std::endl;
@@ -184,7 +184,7 @@ void	Node::display() {
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node) {
 // 	int size = node.getSize();
-	
+
 // 	for (int y = 0; y < size; y++) {
 // 		for (int x = 0; x < size; x++) {
 // 			int src = x + y * size;
@@ -207,7 +207,7 @@ void	Node::display() {
 // 			}
 // 			if (node._graph[src] == 0)
 // 				color = "";
-			
+
 // 			os << color << std::setw(3) << node._graph[src] << " " RESET;
 // 		}
 // 		os << "\n";
@@ -217,7 +217,7 @@ void	Node::display() {
 
 
 float	Node::getSize() const					{ return _size; }
-std::vector<int>	Node::getGraph() const					{ return _graph; }
+std::vector<int>	&Node::getGraph()			{ return _graph; }
 float	Node::getG() const						{ return _g; }
 float	Node::getH() const						{ return _h; }
 float	Node::getF() const						{ return _f; }

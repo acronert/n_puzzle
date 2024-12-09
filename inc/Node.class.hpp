@@ -48,24 +48,25 @@ class Node {
 
 
 	public:
-		
+
 		// Coplien
 		Node(std::vector<int> graph, std::vector<int> goal, std::size_t size);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
-		float	getSize() const;
-		std::vector<int>	getGraph() const;
-		float	getG() const;
-		float	getH() const;
-		float	getF() const;
+		std::vector<int>	&getGraph();
+		float				getSize() const;
+		float				getG() const;
+		float				getH() const;
+		float				getF() const;
 
 		void	setGoal(std::vector<int> goal);
 		void	setG(float value);
 		void	setF(float value);
 
 		static bool	compare(const Node *a, const Node *b);
+
 		void	h();
 		bool				isGoal() const;
 		std::vector<Node>	buildPath();
@@ -77,6 +78,8 @@ class Node {
 
 
 };
+
+
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node);
 

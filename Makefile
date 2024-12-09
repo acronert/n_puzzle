@@ -1,9 +1,9 @@
 NAME		=	n_puzzle
 CXX			=	c++
-FLAGS		=	-Wall -Wextra -Werror -O3 -g3
+FLAGS		=	-std=c++17 -Wall -Wextra -Werror -O3 -g3
 
 SRCS		=	./src/main.cpp ./src/Node.class.cpp
-HEADERS		=	-I ./inc/
+HEADERS		=	-I ./inc/ -I ./cpp_heap/
 
 OBJS		=	$(SRCS:.cpp=.o)
 

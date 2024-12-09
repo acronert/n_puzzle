@@ -3,6 +3,8 @@
 
 #include <Node.class.hpp>
 #include <algorithm>
+#include <heap.hpp>
+#include <heap.tpp>
 
 template <class NodeType>
 std::vector<NodeType> astar(NodeType *start)
