@@ -28,7 +28,7 @@ typedef struct	coord {
 
 
 class Node {
-	public:
+	private:
 		float				_g;
 		float				_h;
 		float				_f;
@@ -40,46 +40,44 @@ class Node {
 
 		std::vector<int>	_goal;
 
-		Node(const Node& other);
+		int		distanceToGoal(int src) const;
+		int		index(s_coord pos);
+		void	swapTiles(s_coord a, s_coord b);
+		int		findDest(int value);
+
+
+
+	public:
+		
+		// Coplien
 		Node(std::vector<int> graph, std::vector<int> goal, std::size_t size);
-		Node& operator=(const Node& other);
 		~Node();
+		Node(const Node& other);
+		Node& operator=(const Node& other);
 
 		float	getSize() const;
+		std::vector<int>	getGraph() const;
 		float	getG() const;
 		float	getH() const;
 		float	getF() const;
+
 		void	setGoal(std::vector<int> goal);
 		void	setG(float value);
 		void	setF(float value);
 
-
-
 		static bool	compare(const Node *a, const Node *b);
-
-
+		void	h();
 		bool				isGoal() const;
 		std::vector<Node>	buildPath();
+
 		std::vector<Node*>	getChildren();
+		void	display();
 
-		void	h();
-
-		void			display();
-		int		distanceToGoal(int src) const;
-
-	private:
-
-		int		index(s_coord pos);
-
-		void	swapTiles(s_coord a, s_coord b);
-
-
-		int	findDest(int value);
 
 
 
 };
 
-std::ostream&	operator<<(std::ostream& os, const Node& node);
+// std::ostream&	operator<<(std::ostream& os, const Node& node);
 
 #endif

@@ -40,7 +40,8 @@ std::vector<NodeType> astar(NodeType *start)
 			{
 				//if child in openSet compare g scores and keep the lowest one
 				// probably slow, can have a map to check faster, more memory
-				if (children[i]->_graph == set->_graph && children[i]->getG() < set->getG())
+				if (children[i]->getGraph() == set->getGraph()
+					&& children[i]->getG() < set->getG())
 				{
 					*set = *children[i];
 					delete children[i];

@@ -1,5 +1,6 @@
 #include "Node.class.hpp"
 
+// COPLIEN /////////////////////////////////////////////////////////////////////
 
 Node::Node(std::vector<int> graph, std::vector<int> goal, std::size_t size) :
 													_g(INFINITY_F),
@@ -48,33 +49,7 @@ Node& Node::operator=(const Node& other) {
 	return *this;
 }
 
-std::vector<Node>	Node::buildPath() {
-	std::vector<Node> path;
-	Node *current = this;
-
-	while (current != nullptr) {
-		path.push_back(*current);
-		current = current->_parent;
-	}
-
-	return path;
-}
-
-bool	Node::compare(const Node *a, const Node *b) {
-	return a->_f < b->_f;
-}
-
-bool	Node::isGoal() const {
-	return this->_graph == _goal;
-}
-
-int		Node::index(s_coord pos) {
-	return pos.x + pos.y * _size;
-}
-
-void	Node::swapTiles(s_coord a, s_coord b) {
-	std::swap(_graph[index(a)], _graph[index(b)]);
-}
+////////////////////////////////////////////////////////////////////////////////
 
 std::vector<Node*>	Node::getChildren(){
 	std::vector<Node*>	children;
@@ -102,6 +77,34 @@ std::vector<Node*>	Node::getChildren(){
 		children.push_back(child);
 	}
 	return children;
+}
+
+std::vector<Node>	Node::buildPath() {
+	std::vector<Node> path;
+	Node *current = this;
+
+	while (current != nullptr) {
+		path.push_back(*current);
+		current = current->_parent;
+	}
+
+	return path;
+}
+
+bool	Node::compare(const Node *a, const Node *b) {
+	return a->_f < b->_f;
+}
+
+bool	Node::isGoal() const {
+	return this->_graph == _goal;
+}
+
+int		Node::index(s_coord pos) {
+	return pos.x + pos.y * _size;
+}
+
+void	Node::swapTiles(s_coord a, s_coord b) {
+	std::swap(_graph[index(a)], _graph[index(b)]);
 }
 
 int	Node::distanceToGoal(int src) const {
@@ -179,41 +182,42 @@ void	Node::display() {
 	std::cout << std::endl;
 }
 
-std::ostream&	operator<<(std::ostream& os, const Node& node) {
-	int size = node.getSize();
+// std::ostream&	operator<<(std::ostream& os, const Node& node) {
+// 	int size = node.getSize();
 	
-	for (int y = 0; y < size; y++) {
-		for (int x = 0; x < size; x++) {
-			int src = x + y * size;
-			int dist = node.distanceToGoal(src);
+// 	for (int y = 0; y < size; y++) {
+// 		for (int x = 0; x < size; x++) {
+// 			int src = x + y * size;
+// 			int dist = node.distanceToGoal(src);
 
-			std::string color;
-			switch (dist) {
-				case 0:
-					color = GREEN;
-					break;
-				case 1:
-					color = YELLOW;
-					break;
-				case 2:
-					color = ORANGE;
-					break;
-				default:
-					color = RED;
-					break;
-			}
-			if (node._graph[src] == 0)
-				color = "";
+// 			std::string color;
+// 			switch (dist) {
+// 				case 0:
+// 					color = GREEN;
+// 					break;
+// 				case 1:
+// 					color = YELLOW;
+// 					break;
+// 				case 2:
+// 					color = ORANGE;
+// 					break;
+// 				default:
+// 					color = RED;
+// 					break;
+// 			}
+// 			if (node._graph[src] == 0)
+// 				color = "";
 			
-			os << color << std::setw(3) << node._graph[src] << " " RESET;
-		}
-		os << "\n";
-	}
-	return os;
-}
+// 			os << color << std::setw(3) << node._graph[src] << " " RESET;
+// 		}
+// 		os << "\n";
+// 	}
+// 	return os;
+// }
 
 
-float	Node::getSize() const						{ return _size; }
+float	Node::getSize() const					{ return _size; }
+std::vector<int>	Node::getGraph() const					{ return _graph; }
 float	Node::getG() const						{ return _g; }
 float	Node::getH() const						{ return _h; }
 float	Node::getF() const						{ return _f; }
