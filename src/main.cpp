@@ -2,6 +2,8 @@
 # include "Astar.hpp"
 # include "utils.hpp"
 
+# include <chrono>
+
 int	main(int argc, char** argv) {
 	(void)argv;
 	if (argc != 2)
@@ -19,13 +21,21 @@ int	main(int argc, char** argv) {
 		node->display();
 		std::cout << "=================\n";
 
+		
+		auto start_time = std::chrono::high_resolution_clock::now();
 		// Execute A*
 		std::vector<Node> path = astar(node);
 
+		auto end_time = std::chrono::high_resolution_clock::now();
+		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);
+		std::cout << "A* took " << duration.count() / 1000 << "ms\n";
 		// Display Path
-		std::cout << "Path found, displaying: \n";
-		for (auto node = path.rbegin(); node != path.rend(); ++node)
-			node->display();
+		// std::cout << "Path found, displaying: \n";
+		// for (auto node = path.rbegin(); node != path.rend(); ++node)
+		// 	node->display();
+
+		while(1)
+			replay(path);
 
 	} catch (const std::exception& e) {
 		std::cout << e.what() << std::endl;

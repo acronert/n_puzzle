@@ -37,7 +37,7 @@ class Node {
 		float				_f;
 		s_coord				_pos;
 		std::vector<int>	_graph;
-		int				_size;
+		int					_size;
 		Node*				_parent;
 		std::vector<int>	_goal;
 
@@ -72,6 +72,7 @@ class Node {
 		void	h();
 		bool	isGoal() const;
 		void	display();
+
 };
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node);
