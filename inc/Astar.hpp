@@ -23,6 +23,7 @@ std::vector<NodeType> astar(NodeType *start)
 			max_nodes = openSet.size();
 		}
 		NodeType *current = openSet.back();
+		current->display();
 		openSet.pop_back();
 		if (current->isGoal())
 		{
