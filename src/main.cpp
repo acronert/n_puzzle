@@ -22,7 +22,7 @@ int	main(int argc, char** argv) {
 		std::cout << "=================\n";
 
 		// Execute A*
-		std::vector<Node> path = astar(node);
+		std::vector<Node> path = astar<Node, std::vector<int>>(node);
 
 		// Display Path
 		std::cout << "Path found, displaying: \n";
