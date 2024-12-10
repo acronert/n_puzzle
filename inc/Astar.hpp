@@ -2,6 +2,7 @@
 # define ASTAR_HPP
 
 #include <Node.class.hpp>
+#include <Solution.class.hpp>
 #include <algorithm>
 #include <map>
 #include <heap.hpp>
@@ -69,7 +70,7 @@
 //
 
 template <class NodeType, class GraphType>
-std::vector<NodeType> astar(NodeType *start)
+Solution astar(NodeType *start)
 {
 	std::size_t	max_nodes = 1;
 	int	loop_count = 0;
@@ -93,10 +94,9 @@ std::vector<NodeType> astar(NodeType *start)
 		// std::cout << "closeSet.size() = " << closeSet.size() << "\n";
 		if (current->isGoal())
 		{
-			std::vector<Node> path = current->buildPath();
-			std::cout << "LOOP COUNT and MAX NODE are: " << loop_count << " " << max_nodes << std::endl;
+			Solution solution(current->buildPath(), loop_count, max_nodes);
 			//free all the Node in Openset and the "cemetery"
-			return path;
+			return solution;
 		}
 
 		std::vector<NodeType*> children = current->getChildren();
