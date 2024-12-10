@@ -33,17 +33,29 @@ const Node*	Heap::operator[](size_t idx) const
 	return (this->_v[idx]);
 }
 
-bool	Heap::getIndex(std::vector<int> &serial, size_t &idx)
-{}
+bool	Heap::getIndex(const std::vector<uint32_t> &serial, size_t &idx)
+{
+	if (auto search = _indexes.find(serial); search != _indexes.end())
+	{
+		idx = search->second;
+		return(true);
+	}
+	return(false);
+}
 
 size_t	Heap::getSize() const
-{}
+{
+	return this->_size;
+}
 
 void	Heap::printHeap()
-{}
-
-void	Heap::printIndexes()
-{}
+{
+	for (auto it:this->_v)
+	{
+		std::cout << it << "\n=====\n";
+	}
+	std::cout << std::endl;
+}
 
 
 void	Heap::_heapify_up(size_t idx)

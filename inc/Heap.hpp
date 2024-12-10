@@ -47,11 +47,10 @@ class Heap
 		Node*	popMin();
 		const Node*	operator[](size_t idx) const;
 
-		bool	getIndex(std::vector<int> &serial, size_t &idx);
+		bool	getIndex(const std::vector<uint32_t> &serial, size_t &idx);
 
 		size_t	getSize() const;
 		void	printHeap();
-		void	printIndexes();
 
 
 };
