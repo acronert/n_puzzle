@@ -2,7 +2,7 @@
 
 NPuzzle::NPuzzle() {
 	_algoType[0] = true;
-	_algoType[1] = false;
+	_algoType[1] = true;
 	_algoType[2] = false;
 }
 
@@ -38,8 +38,9 @@ void	NPuzzle::run(char* filepath)
 			sol.setAlgoType(str);
 
 			_solutions.push_back(sol);
+
+			delete node;
 		}
-		delete node;
 	}
 
 	// Display
@@ -47,12 +48,16 @@ void	NPuzzle::run(char* filepath)
 	int n_solutions = _solutions.size();
 	for (int i = 0; i < n_solutions; i++) {
 		max = std::max(_solutions[i].getMoveCount(), max);
+
+		_solutions[i].displayInfo(std::max(i * (_size * 5) + 1, i * 20));
+		if (i < n_solutions - 1)
+			std::cout << "\033[" << 5 << "A";
 	}
 	while (1) {
 		for (int i = 0; i < max; i++) {
 			for (int j = 0; j < n_solutions; j++) {
 				if (i < _solutions[j].getMoveCount()) {
-					_solutions[j].displayPath(i , j * (_size * 5) + 1);
+					_solutions[j].displayPath(i , std::max(j * (_size * 5) + 1, j * 20));
 					std::cout << "\033[" << _size << "A";    // Move cursor up one line
 				}
 			}
