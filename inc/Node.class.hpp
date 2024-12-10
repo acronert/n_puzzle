@@ -37,6 +37,7 @@ class Node {
 		float				_f;
 		s_coord				_pos;
 		std::vector<int>	_graph;
+		std::string			_str;
 		Node*				_parent;
 
 		static int				_size;
@@ -50,17 +51,19 @@ class Node {
 	public:
 
 		// Coplien
+		Node();
 		Node(std::vector<int> graph, std::vector<int> goal, std::size_t size);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
 		// Getters
-		float	getSize() const;
-		const std::vector<int>	&getGraph() const;
-		float	getG() const;
-		float	getH() const;
-		float	getF() const;
+		float							getSize() const;
+		const std::vector<int>			&getGraph() const;
+		float							getG() const;
+		float							getH() const;
+		float							getF() const;
+		const std::string				&getStr() const;
 
 		// Setters
 		void	setGoal(std::vector<int> goal);
@@ -85,3 +88,5 @@ class Node {
 // std::ostream&	operator<<(std::ostream& os, const Node& node);
 
 #endif
+
+
