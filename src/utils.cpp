@@ -52,54 +52,54 @@ std::vector<uint32_t>	build_goal(uint16_t size)
 	return inputs;
 }
 
-std::vector<uint32_t>	parse(char* filepath) {
-	std::ifstream file(filepath);
-	std::string			line;
-	std::vector<uint32_t>	vec;
+// std::vector<uint32_t>	parse(char* filepath) {
+// 	std::ifstream file(filepath);
+// 	std::string			line;
+// 	std::vector<uint32_t>	vec;
 
-	if (!file)
-		throw std::invalid_argument("Invalid filepath");
-	while (std::getline(file, line)) {
-		std::istringstream	iss(line);
-		std::string			str;
+// 	if (!file)
+// 		throw std::invalid_argument("Invalid filepath");
+// 	while (std::getline(file, line)) {
+// 		std::istringstream	iss(line);
+// 		std::string			str;
 
-		while (iss >> str) {
-			// remove comments
-			if (str[0] == '#')
-				break;
-			// check for non digit characters
-			for (auto c : str) {
-				if (!std::isdigit(c))
-					throw std::invalid_argument("Not a digit");
-			}
-			// transform to int
-			int value = std::stoi(str);
-			vec.push_back(value);
-		}
-	}
-	if (!vec.size())
-		throw std::invalid_argument("empty grid");
+// 		while (iss >> str) {
+// 			// remove comments
+// 			if (str[0] == '#')
+// 				break;
+// 			// check for non digit characters
+// 			for (auto c : str) {
+// 				if (!std::isdigit(c))
+// 					throw std::invalid_argument("Not a digit");
+// 			}
+// 			// transform to int
+// 			int value = std::stoi(str);
+// 			vec.push_back(value);
+// 		}
+// 	}
+// 	if (!vec.size())
+// 		throw std::invalid_argument("empty grid");
 
-	// extract size
-	unsigned int	size = vec[0];
+// 	// extract size
+// 	unsigned int	size = vec[0];
 
-	vec.erase(vec.begin());
-	if (vec.size() != size * size || !size)
-		throw std::invalid_argument("invalid size");
+// 	vec.erase(vec.begin());
+// 	if (vec.size() != size * size || !size)
+// 		throw std::invalid_argument("invalid size");
 
-	// check duplicates
-	std::set<int> uniqueNumbers;
+// 	// check duplicates
+// 	std::set<int> uniqueNumbers;
 
-	for(int num : vec) {
-		if (num < 0 || num >= static_cast<int>(vec.size()))
-			throw std::invalid_argument("invalid value : out of range");
-		if (!uniqueNumbers.insert(num).second) {
-			throw std::invalid_argument("invalid value : duplicate");
-		}
-	}
+// 	for(int num : vec) {
+// 		if (num < 0 || num >= static_cast<int>(vec.size()))
+// 			throw std::invalid_argument("invalid value : out of range");
+// 		if (!uniqueNumbers.insert(num).second) {
+// 			throw std::invalid_argument("invalid value : duplicate");
+// 		}
+// 	}
 
-	return vec;
-}
+// 	return vec;
+// }
 
 std::vector<uint32_t>	random_vec(std::size_t size)
 {
