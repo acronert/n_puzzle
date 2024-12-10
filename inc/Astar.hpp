@@ -65,7 +65,8 @@
 // }
 
 
-
+//astar(start as vector, algo type)
+//
 
 template <class NodeType, class GraphType>
 std::vector<NodeType> astar(NodeType *start)
@@ -105,7 +106,7 @@ std::vector<NodeType> astar(NodeType *start)
 			size_t	idx = 0;
 			if (openSet.getIndex(children[i]->getGraph(), idx))
 			{
-				if (NodeType::compare(children[i], openSet[idx])){
+				if (children[i] < openSet[idx]){
 					openSet.modify(idx, children[i], &Node::updateNode);
 					closeSet[children[i]->getGraph()] = children[i]->getF();
 				}

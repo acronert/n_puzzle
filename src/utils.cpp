@@ -112,15 +112,11 @@ std::vector<uint32_t>	random_vec(std::size_t size)
 	return nums;
 }
 
-void	replay(std::vector<Node> path) {
-	for (auto node = path.rbegin(); node != path.rend(); ++node) {
-		node->display();
-		usleep(400000);
+// void	replay(std::vector<Node> path) {
+// 	for (auto node : path) {
+// 		node.display(10);
+// 		usleep(400000);
 
-		for (int i = 0; i < node->getSize() + 1; ++i) {
-			std::cout << "\033[A"    // Move cursor up one line
-					<< "\033[2K"; // Clear the entire line
-		
-		}
-	}
-}
+// 			std::cout << "\033[" << node.getSize() << "A";    // Move cursor up one line
+// 	}
+// }

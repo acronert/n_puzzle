@@ -23,11 +23,17 @@
 # define	LEFT 3
 # define	RIGHT 4
 
+enum
+{
+	STANDARD,
+	GREEDY,
+	UNIFORM
+};
+
 typedef struct	coord {
 	int16_t x;
 	int16_t y;
 } s_coord;
-
 
 class Node {
 	private:
@@ -46,10 +52,12 @@ class Node {
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
 
+		static int16_t		_algoType;
+
 	public:
 
 		// Coplien
-		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size);
+		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size, int16_t algoType);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
@@ -72,9 +80,11 @@ class Node {
 		std::vector<Node>	buildPath();
 		using NodePtr = Node*;
 		static bool			compare(const NodePtr &a, const NodePtr &b);
+		bool	operator<(const Node& other) const;
+		bool	operator>(const Node& other) const;
 		void	h();
 		bool	isGoal() const;
-		void	display();
+		void	display(int offset_x);
 		static	std::vector<uint32_t>	get_graph(const NodePtr &a)
 		{
 			return (a->_graph);
