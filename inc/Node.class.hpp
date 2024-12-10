@@ -53,6 +53,7 @@ class Node {
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
+		bool	operator<(const Node &b) const;
 
 		// Getters
 		uint16_t	getSize() const;
