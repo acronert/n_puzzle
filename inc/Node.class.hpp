@@ -38,8 +38,8 @@ typedef struct	coord {
 class Node {
 	private:
 
-		uint32_t			_g;
-		uint32_t			_h;
+		uint32_t				_g;
+		uint32_t				_h;
 		s_coord					_pos;
 		std::vector<uint32_t>	_graph;
 		Node*					_parent;
@@ -57,6 +57,7 @@ class Node {
 	public:
 
 		// Coplien
+		Node();
 		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size, int16_t algoType);
 		~Node();
 		Node(const Node& other);
