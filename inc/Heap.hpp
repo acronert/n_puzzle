@@ -45,9 +45,9 @@ class Heap
 		void	insert(Node *newNode);
 		void	modify(size_t idx, Node *newNode);
 		Node*	popMin();
-		const Node*	&operator[](size_t idx) const;
+		const Node*	operator[](size_t idx) const;
 
-		bool	getIndex(char *serialValue, size_t &idx);
+		bool	getIndex(std::vector<int> &serial, size_t &idx);
 
 		size_t	getSize() const;
 		void	printHeap();
