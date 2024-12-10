@@ -1,21 +1,22 @@
 #include "Node.class.hpp"
 
-int	Node::_size = 0;
-std::vector<int>	Node::_goal = {};
+uint16_t	Node::_size = 0;
+std::vector<uint32_t>	Node::_goal = {};
 
 
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
-Node::Node(std::vector<int> graph, std::vector<int> goal, std::size_t size) :
-	_g(0), _h(0), _f(0),
-	_graph(graph), _parent(nullptr)
+Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size) :
+	_g(0), _h(0), _graph(graph), _parent(nullptr)
 {
 	Node::_goal = goal;
 	Node::_size = size;
 	// Search '0' tile position
-	for (int i = 0; i < (int)_graph.size(); i++) {
+	for (uint16_t i = 0; i < (uint16_t)_graph.size(); i++) {
 		if (_graph[i] == 0) {
-			_pos = {i % _size, i / _size };
+			// _pos = {i % _size, i / _size };
+			_pos.x = i % _size;
+			_pos.y = i / _size;
 			break;
 		}
 	}
@@ -30,7 +31,6 @@ Node::~Node() {
 Node::Node(const Node& other) {
 	_g = other._g;
 	_h = other._h;
-	_f = other._f;
 	_graph = other._graph;
 	_pos = other._pos;
 	_parent = other._parent;
@@ -40,10 +40,8 @@ Node& Node::operator=(const Node& other) {
 	if (this != &other) {
 		_g = other._g;
 		_h = other._h;
-		_f = other._f;
 		_graph = other._graph;
 		_pos = other._pos;
-
 		_parent = other._parent;
 	}
 	return *this;
@@ -56,7 +54,9 @@ std::vector<Node*>	Node::getChildren(){
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
 	for (const s_coord& offset : directions) {
-		s_coord dest = { _pos.x + offset.x, _pos.y + offset.y };
+		s_coord dest;
+		dest.x = _pos.x + offset.x;
+		dest.y = _pos.y + offset.y;
 
 		// if out of range, continue
 		if (dest.x < 0 || dest.x >= _size || dest.y < 0 || dest.y >= _size)
@@ -67,7 +67,11 @@ std::vector<Node*>	Node::getChildren(){
 			&& this->_parent->_pos.y == dest.y)
 			continue;
 
-		// else, create child
+
+		// verifier si le node existe deja
+			// si son g est meilleur
+				// update
+			// else, create child
 		Node	*child = new Node(*this);
 
 		child->swapTiles(this->_pos, dest);
@@ -94,7 +98,7 @@ std::vector<Node>	Node::buildPath() {
 }
 
 bool	Node::compare(const NodePtr &a, const NodePtr &b) {
-	return a->_f < b->_f;
+	return (a->_h + a->_g) < (b->_h + b->_g);
 }
 
 bool	Node::isGoal() const {
@@ -118,8 +122,12 @@ int	Node::distanceToGoal(int src) const {
 			break;
 	}
 
-	s_coord	src_pos = {src % _size, src / _size };
-	s_coord	dest_pos = {dest % _size, dest / _size};
+	s_coord	src_pos;
+	src_pos.x = src % _size;
+	src_pos.y = src / _size ;
+	s_coord	dest_pos;
+	dest_pos.x = dest % _size;
+	dest_pos.y = dest / _size;
 
 	return std::abs(src_pos.x - dest_pos.x) + std::abs(src_pos.y - dest_pos.y);
 }
@@ -133,8 +141,6 @@ void	Node::h() {
 			continue;
 		this->_h += distanceToGoal(src);
 	}
-
-	this->_f = this->_h + this->_g;
 }
 
 // Check number of correctly placed tiles
@@ -178,9 +184,8 @@ void	Node::display() {
 		}
 		std::cout << std::endl;
 	}
-	std::cout << "_g = " << _g << std::endl;
-	std::cout << "_h = " << _h << std::endl;
-	std::cout << "_f = " << _f << std::endl;
+
+
 	std::cout << std::endl;
 }
 
@@ -219,14 +224,13 @@ void	Node::display() {
 // }
 
 
-float	Node::getSize() const					{ return _size; }
-const std::vector<int>	&Node::getGraph() const		{ return _graph; }
-float	Node::getG() const						{ return _g; }
-float	Node::getH() const						{ return _h; }
-float	Node::getF() const						{ return _f; }
-void	Node::setG(float value)					{ _g = value; }
-void	Node::setF(float value)					{ _f = value; }
-void	Node::setGoal(std::vector<int> goal)	{ _goal = goal; }
+uint16_t	Node::getSize() const					{ return _size; }
+const std::vector<uint32_t>	&Node::getGraph() const	{ return _graph; }
+uint32_t	Node::getG() const					{ return _g; }
+uint32_t	Node::getH() const					{ return _h; }
+uint32_t	Node::getF() const					{ return _g + _h; }
+void	Node::setG(uint32_t value)					{ _g = value; }
+void	Node::setGoal(std::vector<uint32_t> goal)	{ _goal = goal; }
 
 
 

@@ -5,10 +5,10 @@ int	idx(int i, int j, int size)
 	return (i*size + j);
 }
 
-std::vector<int>	build_goal(std::size_t size)
+std::vector<uint32_t>	build_goal(uint16_t size)
 {
 	int square = size * size;
-	std::vector<int> inputs(square,0);
+	std::vector<uint32_t> inputs(square,0);
 
 	int	top = 0;
 	int bottom = size - 1;
@@ -52,10 +52,10 @@ std::vector<int>	build_goal(std::size_t size)
 	return inputs;
 }
 
-std::vector<int>	parse(char* filepath) {
+std::vector<uint32_t>	parse(char* filepath) {
 	std::ifstream file(filepath);
 	std::string			line;
-	std::vector<int>	vec;
+	std::vector<uint32_t>	vec;
 
 	if (!file)
 		throw std::invalid_argument("Invalid filepath");
@@ -101,9 +101,9 @@ std::vector<int>	parse(char* filepath) {
 	return vec;
 }
 
-std::vector<int>	random_vec(std::size_t size)
+std::vector<uint32_t>	random_vec(std::size_t size)
 {
-	std::vector<int> nums(size*size);
+	std::vector<uint32_t> nums(size*size);
 	for (int i = 0; i < (int)(size*size); i++)
 		nums[i] = i;
 	std::random_device rd;
@@ -117,7 +117,7 @@ void	replay(std::vector<Node> path) {
 		node->display();
 		usleep(400000);
 
-		for (int i = 0; i < node->getSize() + 4; ++i) {
+		for (int i = 0; i < node->getSize() + 1; ++i) {
 			std::cout << "\033[A"    // Move cursor up one line
 					<< "\033[2K"; // Clear the entire line
 		
