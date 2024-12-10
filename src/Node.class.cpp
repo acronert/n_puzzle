@@ -1,16 +1,18 @@
 #include "Node.class.hpp"
 
 uint16_t	Node::_size = 0;
+int16_t		Node::_algoType = 0;
 std::vector<uint32_t>	Node::_goal = {};
-
 
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
-Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size) :
+Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size, int16_t algoType) :
 	_g(0), _h(0), _graph(graph), _parent(nullptr)
 {
 	Node::_goal = goal;
 	Node::_size = size;
+	Node::_algoType = algoType;
+
 	// Search '0' tile position
 	for (uint16_t i = 0; i < (uint16_t)_graph.size(); i++) {
 		if (_graph[i] == 0) {
@@ -20,7 +22,6 @@ Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t siz
 			break;
 		}
 	}
-
 	this->h();
 }
 
@@ -61,7 +62,8 @@ std::vector<Node*>	Node::getChildren(){
 		// if out of range, continue
 		if (dest.x < 0 || dest.x >= _size || dest.y < 0 || dest.y >= _size)
 			continue;
-		// if direction is parent
+
+		// if direction is parent && not GREEDY
 		if (this->_parent
 			&& this->_parent->_pos.x == dest.x
 			&& this->_parent->_pos.y == dest.y)
@@ -70,11 +72,12 @@ std::vector<Node*>	Node::getChildren(){
 
 		// verifier si le node existe deja
 			// si son g est meilleur
-				// update
+				// update ( And dont create a child)
 			// else, create child
 		Node	*child = new Node(*this);
 
 		child->swapTiles(this->_pos, dest);
+
 		child->_g++;
 		child->h();
 		child->_pos = dest;
@@ -93,13 +96,25 @@ std::vector<Node>	Node::buildPath() {
 		path.push_back(*current);
 		current = current->_parent;
 	}
-
+	std::reverse(path.begin(), path.end());
 	return path;
 }
 
-bool	Node::compare(const NodePtr &a, const NodePtr &b) {
-	return (a->_h + a->_g) < (b->_h + b->_g);
+bool	Node::operator<(const Node& other) const {
+	return this->getF() < other.getF();
 }
+
+bool	Node::operator>(const Node& other) const {
+	return this->getF() > other.getF();
+}
+
+// temporaire
+bool	Node::compare(const NodePtr &a, const NodePtr &b) {
+	return a->getF() < b->getF();
+}
+
+
+
 
 bool	Node::isGoal() const {
 	return this->_graph == _goal;
@@ -156,8 +171,9 @@ void	Node::h() {
 // 	this->_h = new_h;
 // }
 
-void	Node::display() {
+void	Node::display(int offset_x) {
 	for (int y = 0; y < _size; y++) {
+		std::cout << "\033[" << offset_x << "C";
 		for (int x = 0; x < _size; x++) {
 			int src = x + y * _size;
 			int dist = distanceToGoal(src);
@@ -180,14 +196,12 @@ void	Node::display() {
 			if (this->_graph[src] == 0)
 				color = "";
 
-			std::cout << color << std::setw(3) << this->_graph[src] << " " RESET;
+			std::cout << color << std::setw(3) <<  this->_graph[src] << " " RESET;
 		}
 		std::cout << std::endl;
 	}
-
-
-	std::cout << std::endl;
 }
+
 
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node) {
@@ -228,7 +242,16 @@ uint16_t	Node::getSize() const					{ return _size; }
 const std::vector<uint32_t>	&Node::getGraph() const	{ return _graph; }
 uint32_t	Node::getG() const					{ return _g; }
 uint32_t	Node::getH() const					{ return _h; }
-uint32_t	Node::getF() const					{ return _g + _h; }
+
+uint32_t	Node::getF() const
+{
+	if (_algoType == STANDARD)
+		return _g + _h;
+	else if (_algoType == GREEDY)
+		return _h;
+	else
+		return _g;
+}
 void	Node::setG(uint32_t value)					{ _g = value; }
 void	Node::setGoal(std::vector<uint32_t> goal)	{ _goal = goal; }
 
