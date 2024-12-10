@@ -25,12 +25,15 @@ class Solution {
 
 		int	getMoveCount() { return _moveCount; }
 
-		void	displayPath(int idx, int offset_x) {
+		void	displayInfo(int offset_x) {
 			std::cout << "\033[" << offset_x << "C" << "algoType : " << _algoType << std::endl;
 			std::cout << "\033[" << offset_x << "C" << "loopCount : " << _loopCount << std::endl;
 			std::cout << "\033[" << offset_x << "C" << "maxNode : " << _maxNode << std::endl;
 			std::cout << "\033[" << offset_x << "C" << "moveCount : " << _moveCount << std::endl;
-			// std::cout << "\033[" << offset_x << "C" << "duration : " << (int)_duration << std::endl;
+			std::cout << "\033[" << offset_x << "C" << "duration : " << std::endl;
+		}
+
+		void	displayPath(int idx, int offset_x) {
 			_path[idx].display(offset_x);
 		}
 
