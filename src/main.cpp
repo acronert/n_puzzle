@@ -13,9 +13,9 @@ int	main(int argc, char** argv) {
 
 	try {
 		// Initialize
-		std::vector<int> start = parse(argv[1]);
+		std::vector<uint32_t> start = parse(argv[1]);
 		int	size = std::sqrt(start.size());
-		std::vector<int> goal = build_goal(size);
+		std::vector<uint32_t> goal = build_goal(size);
 
 		Node *node = new Node(start, goal, size);
 
@@ -26,7 +26,7 @@ int	main(int argc, char** argv) {
 
 		auto start_time = std::chrono::high_resolution_clock::now();
 		// Execute A*
-		std::vector<Node> path = astar<Node, std::vector<int>>(node);
+		std::vector<Node> path = astar<Node, std::vector<uint32_t>>(node);
 
 		auto end_time = std::chrono::high_resolution_clock::now();
 		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end_time - start_time);

@@ -24,23 +24,22 @@
 # define	RIGHT 4
 
 typedef struct	coord {
-	int x;
-	int y;
+	int16_t x;
+	int16_t y;
 } s_coord;
 
 
 class Node {
 	private:
 
-		float				_g;
-		float				_h;
-		float				_f;
-		s_coord				_pos;
-		std::vector<int>	_graph;
-		Node*				_parent;
+		uint32_t			_g;
+		uint32_t			_h;
+		s_coord					_pos;
+		std::vector<uint32_t>	_graph;
+		Node*					_parent;
 
-		static int				_size;
-		static std::vector<int>	_goal;
+		static uint16_t			_size;
+		static std::vector<uint32_t>	_goal;
 
 
 		int		distanceToGoal(int src) const;
@@ -50,22 +49,21 @@ class Node {
 	public:
 
 		// Coplien
-		Node(std::vector<int> graph, std::vector<int> goal, std::size_t size);
+		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
 		// Getters
-		float	getSize() const;
-		const std::vector<int>	&getGraph() const;
-		float	getG() const;
-		float	getH() const;
-		float	getF() const;
+		uint16_t	getSize() const;
+		const std::vector<uint32_t>	&getGraph() const;
+		uint32_t	getG() const;
+		uint32_t	getH() const;
+		uint32_t	getF() const;
 
 		// Setters
-		void	setGoal(std::vector<int> goal);
-		void	setG(float value);
-		void	setF(float value);
+		void	setGoal(std::vector<uint32_t> goal);
+		void	setG(uint32_t value);
 
 		static void	updateNode(Node *old, Node* update);
 
@@ -76,7 +74,7 @@ class Node {
 		void	h();
 		bool	isGoal() const;
 		void	display();
-		static	std::vector<int>	get_graph(const NodePtr &a)
+		static	std::vector<uint32_t>	get_graph(const NodePtr &a)
 		{
 			return (a->_graph);
 		}
