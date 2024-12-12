@@ -4,7 +4,8 @@
 #include <vector>
 #include "Node.class.hpp"
 
-#define POOL_SIZE 181440
+#define POOL_SIZE 1000000
+#define MAX_ALLOC 50
 
 
 class Pool

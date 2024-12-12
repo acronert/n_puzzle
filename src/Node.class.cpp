@@ -1,14 +1,14 @@
 #include "Node.class.hpp"
 #include "unordered_map"
-#include "Pool.class.hpp"
+# include "Pool.class.hpp"
 
 size_t	Node::_size = 0;
 int		Node::_algoType = 0;
-std::vector<uint32_t>	Node::_goal = {};
+std::vector<uint16_t>	Node::_goal = {};
 
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
-Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, size_t size, int algoType) :
+Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType) :
 	_g(0), _h(0), _graph(graph), _parent(nullptr)
 {
 	Node::_goal = goal;
@@ -252,7 +252,7 @@ void	Node::display(int offset_x) {
 
 
 size_t	Node::getSize() const					{ return _size; }
-const std::vector<uint32_t>	&Node::getGraph() const	{ return _graph; }
+const std::vector<uint16_t>	&Node::getGraph() const	{ return _graph; }
 uint32_t	Node::getG() const					{ return _g; }
 uint32_t	Node::getH() const					{ return _h; }
 
@@ -266,7 +266,7 @@ uint32_t	Node::getF() const
 		return _g;
 }
 void	Node::setG(uint32_t value)					{ _g = value; }
-void	Node::setGoal(std::vector<uint32_t> goal)	{ _goal = goal; }
+void	Node::setGoal(std::vector<uint16_t> goal)	{ _goal = goal; }
 
 
 

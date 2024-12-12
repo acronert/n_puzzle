@@ -33,7 +33,7 @@ const Node*	Heap::operator[](size_t idx) const
 	return (this->_v[idx]);
 }
 
-bool	Heap::getIndex(const std::vector<uint32_t> &serial, size_t &idx)
+bool	Heap::getIndex(const std::vector<uint16_t> &serial, size_t &idx)
 {
 	auto search = _indexes.find(serial);
 	if (search != _indexes.end())

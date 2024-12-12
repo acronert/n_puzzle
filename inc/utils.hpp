@@ -14,11 +14,9 @@
 
 class Node;
 
-std::vector<uint32_t>	build_goal(uint16_t size);
+std::vector<uint16_t>	build_goal(uint16_t size);
 
-std::vector<uint32_t>	parse(char* filepath);
-
-std::vector<uint32_t>	random_vec(std::size_t size);
+std::vector<uint16_t>	parse(char* filepath);
 
 void	replay(std::vector<Node> path);
 

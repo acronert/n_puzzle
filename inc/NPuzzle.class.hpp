@@ -12,8 +12,8 @@ class NPuzzle {
 	private:
 		bool	_algoType[3];
 		std::vector<Solution>	_solutions;
-		std::vector<uint32_t>	_start;
-		std::vector<uint32_t>	_goal;
+		std::vector<uint16_t>	_start;
+		std::vector<uint16_t>	_goal;
 		uint16_t				_size;
 
 		Solution				_aStar(Node* start);
@@ -23,7 +23,7 @@ class NPuzzle {
 		~NPuzzle();
 		void	run(char* filepath);
 
-		std::vector<uint32_t>	parse(char* filepath);
+		std::vector<uint16_t>	parse(char* filepath);
 		void	displaySolutions();
 };
 

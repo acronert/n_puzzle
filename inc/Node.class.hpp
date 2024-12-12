@@ -24,6 +24,7 @@
 # define	LEFT 3
 # define	RIGHT 4
 
+
 class Pool;
 class PoolStack;
 
@@ -37,8 +38,8 @@ enum
 
 
 typedef struct	coord {
-	int 	x;			// -> 8 bit, +24bit
-	int 	y;
+	int8_t 	x;			// -> 8 bit, +24bit
+	int8_t 	y;
 } s_coord;
 
 class Node {
@@ -47,11 +48,11 @@ class Node {
 		uint32_t				_g;
 		uint32_t				_h;
 		s_coord					_pos;
-		std::vector<uint32_t>	_graph;
+		std::vector<uint16_t>	_graph;
 		Node*					_parent;
 
 		static size_t		_size;
-		static std::vector<uint32_t>	_goal;
+		static std::vector<uint16_t>	_goal;
 
 
 		int		distanceToGoal(int src) const;
@@ -64,20 +65,20 @@ class Node {
 
 		// Coplien
 		Node();
-		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, size_t size, int algoType);
+		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
 		// Getters
 		size_t		getSize() const;
-		const std::vector<uint32_t>	&getGraph() const;
+		const std::vector<uint16_t>	&getGraph() const;
 		uint32_t	getG() const;
 		uint32_t	getH() const;
 		uint32_t	getF() const;
 
 		// Setters
-		void	setGoal(std::vector<uint32_t> goal);
+		void	setGoal(std::vector<uint16_t> goal);
 		void	setG(uint32_t value);
 		void	setH(uint32_t value) {_h = value;}
 
@@ -94,7 +95,7 @@ class Node {
 		bool	isGoal() const;
 		void	display(int offset_x);
 		void	debug();
-		static	std::vector<uint32_t>	get_graph(const NodePtr &a)
+		static	std::vector<uint16_t>	get_graph(const NodePtr &a)
 		{
 			return (a->_graph);
 		}

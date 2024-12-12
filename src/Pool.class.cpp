@@ -7,6 +7,7 @@ Pool::Pool(): _idx(0), _size(POOL_SIZE)
 
 Pool::~Pool()
 {
+	std::cout << "Pool destructor\n";
 }
 
 
@@ -35,6 +36,9 @@ Node*	PoolStack::next()
 	pt = _poolStack.back()->next();
 	if (pt == nullptr)
 	{
+		if (_size > MAX_ALLOC)
+			throw std::overflow_error("too many pool allocations");
+		std::cout << "size = " << _size << "\n";
 		_poolStack.push_back(new Pool());
 		_size++;
 		return this->next();

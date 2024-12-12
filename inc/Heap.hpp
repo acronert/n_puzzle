@@ -8,10 +8,10 @@
 #include <map>
 struct vecHasher
 {
-	std::size_t operator()(const std::vector<uint32_t> &v) const
+	std::size_t operator()(const std::vector<uint16_t> &v) const
 	{
 		std::size_t seed = v.size();
-		for(auto x : v)
+		for(uint32_t x : v)
 		{
 			x = ((x >> 16) ^ x) * 0x45d9f3b;
     		x = ((x >> 16) ^ x) * 0x45d9f3b;
@@ -29,7 +29,7 @@ class Heap
 		std::vector<Node *>	_v;
 		size_t				_size;
 
-		std::unordered_map<std::vector<uint32_t>, size_t, vecHasher>	_indexes;
+		std::unordered_map<std::vector<uint16_t>, size_t, vecHasher>	_indexes;
 
 		void	_heapify_up(size_t idx);
 		void	_heapify_down(size_t idx);
@@ -47,7 +47,7 @@ class Heap
 		Node*	popMin();
 		const Node*	operator[](size_t idx) const;
 
-		bool	getIndex(const std::vector<uint32_t> &serial, size_t &idx);
+		bool	getIndex(const std::vector<uint16_t> &serial, size_t &idx);
 
 		size_t	getSize() const;
 		void	printHeap();

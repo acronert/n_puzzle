@@ -2,7 +2,7 @@
 #include "Pool.class.hpp"
 
 NPuzzle::NPuzzle() {
-	_algoType[0] = true;
+	_algoType[0] = false;
 	_algoType[1] = true;
 	_algoType[2] = false;
 }
@@ -38,21 +38,31 @@ void	NPuzzle::run(char* filepath)
 
 			auto start_time = std::chrono::high_resolution_clock::now();
 
+			
 			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
-			Solution sol = this->_aStar(node);
+			try {
+				Solution sol = this->_aStar(node);
 
-			auto end_time = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+				auto end_time = std::chrono::high_resolution_clock::now();
+				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
-			sol.setDuration(duration);
-			sol.setAlgoType(str);
-			_solutions.push_back(sol);
+				sol.setDuration(duration);
+				sol.setAlgoType(str);
+				_solutions.push_back(sol);
 
-			delete node;
+				delete node;
 
-			std::cout << str << " path found !\n";
+				std::cout << str << " path found !\n";
+
+			}
+			catch (std::exception &e) {
+				delete node;
+				std::cout << e.what() << std::endl;
+				return ;
+			}
 		}
 	}
+
 
 	displaySolutions();
 }
@@ -92,10 +102,10 @@ void	NPuzzle::displaySolutions() {
 
 }
 
-std::vector<uint32_t>	NPuzzle::parse(char* filepath) {
+std::vector<uint16_t>	NPuzzle::parse(char* filepath) {
 	std::ifstream file(filepath);
 	std::string			line;
-	std::vector<uint32_t>	vec;
+	std::vector<uint16_t>	vec;
 
 	if (!file)
 		throw std::invalid_argument("Invalid filepath");
@@ -159,7 +169,7 @@ Solution	NPuzzle::_aStar(Node *start)
 	std::vector<Node *>	children;
 	Heap	openSet = Heap();
 	openSet.insert(start);
-	std::unordered_map<std::vector<uint32_t>, Node*, vecHasher>	closeSet;
+	std::unordered_map<std::vector<uint16_t>, Node*, vecHasher>	closeSet;
 	closeSet[start->getGraph()] = start;
 
 	while (openSet.getSize() > 0)

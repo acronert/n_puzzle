@@ -5,10 +5,10 @@ int	idx(int i, int j, int size)
 	return (i*size + j);
 }
 
-std::vector<uint32_t>	build_goal(uint16_t size)
+std::vector<uint16_t>	build_goal(uint16_t size)
 {
 	int square = size * size;
-	std::vector<uint32_t> inputs(square,0);
+	std::vector<uint16_t> inputs(square,0);
 
 	int	top = 0;
 	int bottom = size - 1;
@@ -101,16 +101,6 @@ std::vector<uint32_t>	build_goal(uint16_t size)
 // 	return vec;
 // }
 
-std::vector<uint32_t>	random_vec(std::size_t size)
-{
-	std::vector<uint32_t> nums(size*size);
-	for (int i = 0; i < (int)(size*size); i++)
-		nums[i] = i;
-	std::random_device rd;
-	std::mt19937 g(rd());
-	std::shuffle(nums.begin(), nums.end(), g);
-	return nums;
-}
 
 // void	replay(std::vector<Node> path) {
 // 	for (auto node : path) {
