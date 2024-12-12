@@ -24,6 +24,7 @@ class NPuzzle {
 		void	run(char* filepath);
 
 		std::vector<uint32_t>	parse(char* filepath);
+		void	displaySolutions();
 };
 
 #endif

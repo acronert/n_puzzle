@@ -18,53 +18,82 @@ void	NPuzzle::run(char* filepath)
 	_size = std::sqrt(_start.size());
 	_goal = build_goal(_size);
 
+	// Display start
+	Node nodeDisplay = Node(_start, _goal, _size, 0);
+	std::cout << "Start:\n";
+	nodeDisplay.display(0);
+	std::cout << "\n";
+
 	// Execute A*
 	for (int type = 0; type < 3; type++) {
+		std::string str = "standard";
+		if (type == GREEDY)
+			str = "greedy";
+		else if (type == UNIFORM)
+			str = "uniform";
+
+		std::cout << "Calculating path with " << str << " algorithm...\n";
+
 		if (_algoType[type]) {
 			Node *node = new Node(_start, _goal, _size, type);
 
 			auto start_time = std::chrono::high_resolution_clock::now();
 
-			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
-			Solution sol = this->_aStar(node);
-			auto end_time = std::chrono::high_resolution_clock::now();
-			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-			sol.setDuration(duration);
+			Solution sol = astar<Node, std::vector<uint32_t>>(node);
 
-			std::string str = "standard";
-			if (type == GREEDY)
-				str = "greedy";
-			else if (type == UNIFORM)
-				str = "uniform";
+			// auto end_time = std::chrono::high_resolution_clock::now();
+
+			// sol.setDuration(end_time - start_time);
+
 			sol.setAlgoType(str);
 
 			_solutions.push_back(sol);
 
 			delete node;
+
+			std::cout << "Path found\n";
 		}
 	}
 
+	displaySolutions();
+}
+
+void	NPuzzle::displaySolutions() {
 	// Display
 	int max = 0;
 	int n_solutions = _solutions.size();
+	int	padding;
+
+	// 5 is number of info lines
+	padding = std::max(0, 5 - _size) + 1;
+
+	// print start
+	// _solutions[0].displayStart(0);
+	// _solutions[0].displayGoal(0);
+
+		// get max iterations
 	for (int i = 0; i < n_solutions; i++) {
 		max = std::max(_solutions[i].getMoveCount(), max);
-
-		_solutions[i].displayInfo(std::max(i * (_size * 5) + 1, i * 20));
-		if (i < n_solutions - 1)
-			std::cout << "\033[" << 5 << "A";
 	}
-	while (1) {
+
+	// while (1) {
 		for (int i = 0; i < max; i++) {
 			for (int j = 0; j < n_solutions; j++) {
-				if (i < _solutions[j].getMoveCount()) {
-					_solutions[j].displayPath(i , std::max(j * (_size * 5) + 1, j * 20));
-					std::cout << "\033[" << _size << "A";    // Move cursor up one line
-				}
+				// display paths
+				_solutions[j].displayPath(std::min(i, _solutions[j].getMoveCount() - 1) ,0);
+				for (int k = 0; k < padding; k++)
+					std::cout << "\n";
+				// display info
+				std::cout << "\033[" << _size + padding << "A";
+				_solutions[j].displayInfo((_size + 1) * 3);
+				for (int k = 0; k < (_size + padding) - 5; k++)
+					std::cout << "\n";
 			}
-			usleep(400000);
+			std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
+			usleep(300000);
 		}
-	}
+	// }
+
 }
 
 std::vector<uint32_t>	NPuzzle::parse(char* filepath) {
