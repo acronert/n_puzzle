@@ -31,8 +31,8 @@ enum
 };
 
 typedef struct	coord {
-	int16_t x;
-	int16_t y;
+	int 	x;
+	int 	y;
 } s_coord;
 
 class Node {
@@ -44,7 +44,7 @@ class Node {
 		std::vector<uint32_t>	_graph;
 		Node*					_parent;
 
-		static uint16_t			_size;
+		static size_t		_size;
 		static std::vector<uint32_t>	_goal;
 
 
@@ -52,19 +52,19 @@ class Node {
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
 
-		static int16_t		_algoType;
+		static int		_algoType;
 
 	public:
 
 		// Coplien
 		Node();
-		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size, int16_t algoType);
+		Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, size_t size, int algoType);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
 
 		// Getters
-		uint16_t	getSize() const;
+		size_t		getSize() const;
 		const std::vector<uint32_t>	&getGraph() const;
 		uint32_t	getG() const;
 		uint32_t	getH() const;
@@ -73,10 +73,12 @@ class Node {
 		// Setters
 		void	setGoal(std::vector<uint32_t> goal);
 		void	setG(uint32_t value);
+		void	setH(uint32_t value) {_h = value;}
+
 
 		static void	updateNode(Node *old, Node* update);
 
-		std::vector<Node*>	getChildren();
+		void	getChildren(std::vector<Node*> &offspring);
 		std::vector<Node>	buildPath();
 		using NodePtr = Node*;
 		static bool			compare(const NodePtr &a, const NodePtr &b);
@@ -85,6 +87,7 @@ class Node {
 		void	h();
 		bool	isGoal() const;
 		void	display(int offset_x);
+		void	debug();
 		static	std::vector<uint32_t>	get_graph(const NodePtr &a)
 		{
 			return (a->_graph);

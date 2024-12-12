@@ -1,12 +1,14 @@
 #include "Node.class.hpp"
+#include "unordered_map"
 
-uint16_t	Node::_size = 0;
-int16_t		Node::_algoType = 0;
+
+size_t	Node::_size = 0;
+int		Node::_algoType = 0;
 std::vector<uint32_t>	Node::_goal = {};
 
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
-Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t size, int16_t algoType) :
+Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, size_t size, int algoType) :
 	_g(0), _h(0), _graph(graph), _parent(nullptr)
 {
 	Node::_goal = goal;
@@ -14,7 +16,7 @@ Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t siz
 	Node::_algoType = algoType;
 
 	// Search '0' tile position
-	for (uint16_t i = 0; i < (uint16_t)_graph.size(); i++) {
+	for (int i = 0; i < (int)_graph.size(); i++) {
 		if (_graph[i] == 0) {
 			// _pos = {i % _size, i / _size };
 			_pos.x = i % _size;
@@ -24,6 +26,9 @@ Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, uint16_t siz
 	}
 	this->h();
 }
+
+Node::Node() : _graph(_goal)
+{}
 
 Node::~Node() {
 	//std::cout << "destructor called on adress: " << this << std::endl;
@@ -50,31 +55,40 @@ Node& Node::operator=(const Node& other) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-std::vector<Node*>	Node::getChildren(){
-	std::vector<Node*>	children;
+void	Node::getChildren(std::vector<Node*> &children){
+	// std::vector<Node*>	children;
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
-	for (const s_coord& offset : directions) {
+	for (size_t i = 0; i < 4; i++) {
+		const s_coord	&offset = directions[i];
 		s_coord dest;
 		dest.x = _pos.x + offset.x;
 		dest.y = _pos.y + offset.y;
 
 		// if out of range, continue
-		if (dest.x < 0 || dest.x >= _size || dest.y < 0 || dest.y >= _size)
+		if (dest.x < 0 || dest.x >= (int)_size || dest.y < 0 || dest.y >= (int)_size)
+		{
+			children[i] = nullptr;
 			continue;
+		}
 
 		// if direction is parent && not GREEDY
 		if (this->_parent
 			&& this->_parent->_pos.x == dest.x
 			&& this->_parent->_pos.y == dest.y)
-			continue;
+			{
+				children[i] = nullptr;
+				continue;
+			}
 
 
 		// verifier si le node existe deja
 			// si son g est meilleur
 				// update ( And dont create a child)
 			// else, create child
-		Node	*child = new Node(*this);
+		//Node	*child = new Node(*this);
+		Node *child = children[i];
+		*child = *this;
 
 		child->swapTiles(this->_pos, dest);
 
@@ -83,12 +97,11 @@ std::vector<Node*>	Node::getChildren(){
 		child->_pos = dest;
 		child->_parent = this;
 
-		children.push_back(child);
+		// children.push_back(child);
 	}
-	return children;
 }
 
-std::vector<Node>	Node::buildPath() {
+std::vector<Node>	Node::buildPath(){
 	std::vector<Node> path;
 	Node *current = this;
 
@@ -172,9 +185,9 @@ void	Node::h() {
 // }
 
 void	Node::display(int offset_x) {
-	for (int y = 0; y < _size; y++) {
+	for (int y = 0; y < (int)_size; y++) {
 		std::cout << "\033[" << offset_x << "C";
-		for (int x = 0; x < _size; x++) {
+		for (int x = 0; x < (int)_size; x++) {
 			int src = x + y * _size;
 			int dist = distanceToGoal(src);
 
@@ -238,7 +251,7 @@ void	Node::display(int offset_x) {
 // }
 
 
-uint16_t	Node::getSize() const					{ return _size; }
+size_t	Node::getSize() const					{ return _size; }
 const std::vector<uint32_t>	&Node::getGraph() const	{ return _graph; }
 uint32_t	Node::getG() const					{ return _g; }
 uint32_t	Node::getH() const					{ return _h; }
@@ -262,3 +275,9 @@ void	Node::updateNode(Node *old, Node *update)
 	*old = *update;
 }
 
+void	Node::debug()
+{
+	std::cout << "Node state " << this->_graph[0] << std::endl;
+	std::cout << "g & h = " << this->getG() << " & " << this->getH();
+	std::cout << "/n======\n";
+ }

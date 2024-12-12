@@ -1,8 +1,9 @@
-# include "NPuzzle.class.hpp"
+#include "NPuzzle.class.hpp"
+#include "Pool.class.hpp"
 
 NPuzzle::NPuzzle() {
 	_algoType[0] = true;
-	_algoType[1] = true;
+	_algoType[1] = false;
 	_algoType[2] = false;
 }
 
@@ -22,13 +23,13 @@ void	NPuzzle::run(char* filepath)
 		if (_algoType[type]) {
 			Node *node = new Node(_start, _goal, _size, type);
 
-			// auto start_time = std::chrono::high_resolution_clock::now();
+			auto start_time = std::chrono::high_resolution_clock::now();
 
-			Solution sol = astar<Node, std::vector<uint32_t>>(node);
-
-			// auto end_time = std::chrono::high_resolution_clock::now();
-			
-			// sol.setDuration(end_time - start_time);
+			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
+			Solution sol = this->_aStar(node);
+			auto end_time = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+			sol.setDuration(duration);
 
 			std::string str = "standard";
 			if (type == GREEDY)
@@ -114,3 +115,112 @@ std::vector<uint32_t>	NPuzzle::parse(char* filepath) {
 
 	return vec;
 }
+
+void	take_four(std::vector<Node *> &children, PoolStack &pool)
+{
+	children.clear();
+	for (size_t i = 0; i < 4; i++)
+	{
+		children.push_back(pool.next());
+	}
+}
+
+Solution	NPuzzle::_aStar(Node *start)
+{
+	size_t	max_nodes = 1;
+	int		loop_count = 0;
+
+	PoolStack pool = PoolStack();
+	std::vector<Node *>	children;
+	children.reserve(4);
+	Heap	openSet = Heap();
+	openSet.insert(start);
+	std::unordered_map<std::vector<uint32_t>, Node*, vecHasher>	closeSet;
+	closeSet[start->getGraph()] = start;
+
+	while (openSet.getSize() > 0)
+	{
+		loop_count++;
+		if (openSet.getSize() > max_nodes)
+		{
+			max_nodes = openSet.getSize();
+		}
+		Node*	current = openSet.popMin();
+		if (current->isGoal())
+		{
+			return (Solution(current->buildPath(), loop_count, max_nodes));
+		}
+		take_four(children, pool);
+		current->getChildren(children);
+		for (auto child: children)
+		{
+			if (child == nullptr)
+				continue;
+			auto search = closeSet.find(child->getGraph());
+			if (search != closeSet.end()) // dans le closeSet == deja croise
+			{
+				if (*child < *search->second) //si new f better than old f
+				{
+					size_t idx = 0;
+					if (openSet.getIndex(child->getGraph(), idx)) //si deja ds openset on modifie
+					{
+						openSet.modify(idx, child);
+					}
+					else //plus ds open set => ajoute a nveau
+					{
+						openSet.insert(search->second);
+						*search->second = *child;
+					}
+				}
+			}
+			else //jamais vu on ajoute aux deux sets
+			{
+				openSet.insert(child);
+				closeSet[child->getGraph()] = child;
+			}
+		}
+
+	}
+	throw std::invalid_argument("No path found");
+
+
+
+}
+
+
+
+
+
+/*
+{
+			size_t idx = 0;
+			if (openSet.getIndex(child->getGraph(), idx)) //si ds open set
+			{
+				if (child < openSet[idx])
+				{
+					openSet.modify(idx, child);
+				}
+				delete child;
+				child = NULL;
+			}
+			else
+			{
+				if (auto search = closeSet.find(child->getGraph()); search != closeSet.end())
+				{
+					if (child->getF() < search->second->getF())
+					{
+						openSet.insert(child);
+						closeSet.erase(child->getGraph()); //un pointeur disparait a regler plus tard
+					}
+					else
+					{
+						delete child;
+					}
+				}
+				else{
+					openSet.insert(child);
+				}
+			}
+		}
+
+*/
