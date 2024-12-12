@@ -3,7 +3,7 @@
 
 NPuzzle::NPuzzle() {
 	_algoType[0] = true;
-	_algoType[1] = false;
+	_algoType[1] = true;
 	_algoType[2] = false;
 }
 
@@ -34,25 +34,23 @@ void	NPuzzle::run(char* filepath)
 
 
 		if (_algoType[type]) {
-			std::cout << "Calculating path with " << str << " algorithm... ";
 			Node *node = new Node(_start, _goal, _size, type);
 
-			//auto start_time = std::chrono::high_resolution_clock::now();
+			auto start_time = std::chrono::high_resolution_clock::now();
 
 			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
 			Solution sol = this->_aStar(node);
 
-			// auto end_time = std::chrono::high_resolution_clock::now();
-
-			// sol.setDuration(end_time - start_time);
-
+			auto end_time = std::chrono::high_resolution_clock::now();
+			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
+			
+			sol.setDuration(duration);
 			sol.setAlgoType(str);
-
 			_solutions.push_back(sol);
 
 			delete node;
 
-			std::cout << "Path found !\n";
+			std::cout << str << " path found !\n";
 		}
 	}
 
