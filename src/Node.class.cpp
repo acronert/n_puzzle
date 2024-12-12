@@ -1,6 +1,6 @@
 #include "Node.class.hpp"
 #include "unordered_map"
-
+#include "Pool.class.hpp"
 
 size_t	Node::_size = 0;
 int		Node::_algoType = 0;
@@ -27,8 +27,9 @@ Node::Node(std::vector<uint32_t> graph, std::vector<uint32_t> goal, size_t size,
 	this->h();
 }
 
-Node::Node() : _graph(_goal)
-{}
+Node::Node()
+{
+}
 
 Node::~Node() {
 	//std::cout << "destructor called on adress: " << this << std::endl;
@@ -55,8 +56,8 @@ Node& Node::operator=(const Node& other) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void	Node::getChildren(std::vector<Node*> &children){
-	// std::vector<Node*>	children;
+std::vector<Node*>	Node::getChildren(PoolStack &pool){
+	std::vector<Node*>	children;
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
 
 	for (size_t i = 0; i < 4; i++) {
@@ -68,7 +69,6 @@ void	Node::getChildren(std::vector<Node*> &children){
 		// if out of range, continue
 		if (dest.x < 0 || dest.x >= (int)_size || dest.y < 0 || dest.y >= (int)_size)
 		{
-			children[i] = nullptr;
 			continue;
 		}
 
@@ -77,7 +77,6 @@ void	Node::getChildren(std::vector<Node*> &children){
 			&& this->_parent->_pos.x == dest.x
 			&& this->_parent->_pos.y == dest.y)
 			{
-				children[i] = nullptr;
 				continue;
 			}
 
@@ -87,7 +86,7 @@ void	Node::getChildren(std::vector<Node*> &children){
 				// update ( And dont create a child)
 			// else, create child
 		//Node	*child = new Node(*this);
-		Node *child = children[i];
+		Node *child = pool.next();
 		*child = *this;
 
 		child->swapTiles(this->_pos, dest);
@@ -97,8 +96,9 @@ void	Node::getChildren(std::vector<Node*> &children){
 		child->_pos = dest;
 		child->_parent = this;
 
-		// children.push_back(child);
+		children.push_back(child);
 	}
+	return (children);
 }
 
 std::vector<Node>	Node::buildPath(){

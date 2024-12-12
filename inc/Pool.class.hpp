@@ -10,7 +10,7 @@
 class Pool
 {
 	private:
-		Node		*_pool;
+		std::vector<Node>	_pool;
 		std::size_t		_idx;
 		std::size_t		_size;
 

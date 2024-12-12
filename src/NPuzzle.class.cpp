@@ -43,7 +43,7 @@ void	NPuzzle::run(char* filepath)
 
 			auto end_time = std::chrono::high_resolution_clock::now();
 			auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
-			
+
 			sol.setDuration(duration);
 			sol.setAlgoType(str);
 			_solutions.push_back(sol);
@@ -141,14 +141,14 @@ std::vector<uint32_t>	NPuzzle::parse(char* filepath) {
 	return vec;
 }
 
-void	take_four(std::vector<Node *> &children, PoolStack &pool)
-{
-	children.clear();
-	for (size_t i = 0; i < 4; i++)
-	{
-		children.push_back(pool.next());
-	}
-}
+// void	take_four(std::vector<Node *> &children, PoolStack &pool)
+// {
+// 	children.clear();
+// 	for (size_t i = 0; i < 4; i++)
+// 	{
+// 		children.push_back(pool.next());
+// 	}
+// }
 
 Solution	NPuzzle::_aStar(Node *start)
 {
@@ -157,7 +157,6 @@ Solution	NPuzzle::_aStar(Node *start)
 
 	PoolStack pool = PoolStack();
 	std::vector<Node *>	children;
-	children.reserve(4);
 	Heap	openSet = Heap();
 	openSet.insert(start);
 	std::unordered_map<std::vector<uint32_t>, Node*, vecHasher>	closeSet;
@@ -175,12 +174,10 @@ Solution	NPuzzle::_aStar(Node *start)
 		{
 			return (Solution(current->buildPath(), loop_count, max_nodes));
 		}
-		take_four(children, pool);
-		current->getChildren(children);
+		children = current->getChildren(pool);
 		for (auto child: children)
 		{
-			if (child == nullptr)
-				continue;
+			
 			auto search = closeSet.find(child->getGraph());
 			if (search != closeSet.end()) // dans le closeSet == deja croise
 			{

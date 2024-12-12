@@ -23,6 +23,9 @@
 # define	LEFT 3
 # define	RIGHT 4
 
+class Pool;
+class PoolStack;
+
 enum
 {
 	STANDARD,
@@ -78,7 +81,7 @@ class Node {
 
 		static void	updateNode(Node *old, Node* update);
 
-		void	getChildren(std::vector<Node*> &offspring);
+		std::vector<Node *>	getChildren(PoolStack &pool);
 		std::vector<Node>	buildPath();
 		using NodePtr = Node*;
 		static bool			compare(const NodePtr &a, const NodePtr &b);

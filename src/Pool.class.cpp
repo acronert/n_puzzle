@@ -2,12 +2,11 @@
 
 Pool::Pool(): _idx(0), _size(POOL_SIZE)
 {
-	_pool = new Node[_size];
+	_pool.reserve(POOL_SIZE);
 }
 
 Pool::~Pool()
 {
-	delete[] _pool;
 }
 
 
@@ -17,6 +16,7 @@ Node*	Pool::next()
 		return (nullptr);
 	else
 	{
+		_pool.emplace_back(Node());
 		Node* pt = &_pool[_idx];
 		_idx++;
 		return (pt);
