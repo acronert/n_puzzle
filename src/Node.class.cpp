@@ -196,7 +196,7 @@ void	Node::display(int offset_x) {
 			if (this->_graph[src] == 0)
 				color = "";
 
-			std::cout << color << std::setw(3) <<  this->_graph[src] << " " RESET;
+			std::cout << color << std::setw(3) <<  this->_graph[src] << RESET;
 		}
 		std::cout << std::endl;
 	}
