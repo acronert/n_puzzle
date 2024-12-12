@@ -31,8 +31,10 @@ enum
 	UNIFORM
 };
 
+
+
 typedef struct	coord {
-	int 	x;
+	int 	x;			// -> 8 bit, +24bit
 	int 	y;
 } s_coord;
 
