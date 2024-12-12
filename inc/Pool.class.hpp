@@ -2,7 +2,7 @@
 #define POOL_HPP
 
 #include <Node.class.hpp>
-#include <stack>
+#include <vector>
 
 #define POOL_SIZE 181440
 
@@ -23,7 +23,7 @@ class Pool
 class PoolStack
 {
 	private:
-		std::stack<Pool>	_poolStack;
+		std::vector<Pool>	_poolStack;
 		size_t				_size;
 
 	public:
