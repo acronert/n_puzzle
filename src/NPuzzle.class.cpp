@@ -37,9 +37,10 @@ void	NPuzzle::run(char* filepath)
 		if (_algoType[type]) {
 			Node *node = new Node(_start, _goal, _size, type);
 
-			auto start_time = std::chrono::high_resolution_clock::now();
+			//auto start_time = std::chrono::high_resolution_clock::now();
 
-			Solution sol = astar<Node, std::vector<uint32_t>>(node);
+			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
+			Solution sol = this->_aStar(node);
 
 			// auto end_time = std::chrono::high_resolution_clock::now();
 

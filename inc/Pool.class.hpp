@@ -29,7 +29,10 @@ class PoolStack
 
 	public:
 		PoolStack();
-		~PoolStack() {};
+		~PoolStack() {
+			for (auto it: _poolStack)
+				delete it;
+		};
 		Node*	next();
 };
 
