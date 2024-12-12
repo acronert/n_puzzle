@@ -6,7 +6,8 @@ SRCS		=	./src/main.cpp	\
 				./src/Node.class.cpp	\
 				./src/utils.cpp	\
 				./src/Solution.class.cpp	\
-				./src/NPuzzle.class.cpp ./src/Heap.cpp
+				./src/NPuzzle.class.cpp ./src/Heap.cpp \
+				./src/Pool.class.cpp
 HEADERS		=	-I ./inc/ -I ./cpp_heap/
 
 OBJS		=	$(SRCS:.cpp=.o)

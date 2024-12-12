@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <algorithm>
 #include <Node.class.hpp>
-
+#include <map>
 struct vecHasher
 {
 	std::size_t operator()(const std::vector<uint32_t> &v) const

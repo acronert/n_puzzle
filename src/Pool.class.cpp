@@ -25,17 +25,17 @@ Node*	Pool::next()
 
 PoolStack::PoolStack()
 {
-	_poolStack.push_back(Pool());
+	_poolStack.push_back(new Pool());
 	_size = 1;
 }
 
 Node*	PoolStack::next()
 {
 	Node* pt = nullptr;
-	pt = _poolStack.back().next();
+	pt = _poolStack.back()->next();
 	if (pt == nullptr)
 	{
-		_poolStack.push_back(Pool());
+		_poolStack.push_back(new Pool());
 		_size++;
 		return this->next();
 	}

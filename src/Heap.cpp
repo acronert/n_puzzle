@@ -17,7 +17,7 @@ void	Heap::insert(Node *newNode)
 
 void	Heap::modify(size_t idx, Node *newNode)
 {
-	bool	heapify = (*newNode < *_v[idx]);
+	bool	heapify = (newNode->getF() < _v[idx]->getF());
 	*_v[idx] = *newNode;
 	if (heapify)
 	{
@@ -35,7 +35,8 @@ const Node*	Heap::operator[](size_t idx) const
 
 bool	Heap::getIndex(const std::vector<uint32_t> &serial, size_t &idx)
 {
-	if (auto search = _indexes.find(serial); search != _indexes.end())
+	auto search = _indexes.find(serial);
+	if (search != _indexes.end())
 	{
 		idx = search->second;
 		return(true);
@@ -50,9 +51,11 @@ size_t	Heap::getSize() const
 
 void	Heap::printHeap()
 {
-	for (auto it:this->_v)
+	for (size_t i = 0; i < _v.size(); i++)
 	{
-		std::cout << it << "\n=====\n";
+		std::cout << "\n=====\n" << "index " << i;
+		_v[i]->debug();
+		std::cout << "\n=====\n";
 	}
 	std::cout << std::endl;
 }
@@ -63,7 +66,7 @@ void	Heap::_heapify_up(size_t idx)
 	while (idx > 0)
 	{
 		size_t	root = (idx-1)/2;
-		if (_v[idx] < _v[root])
+		if (_v[idx]->getF() < _v[root]->getF())
 		{
 			_indexes[_v[idx]->getGraph()] = root;
 			_indexes[_v[root]->getGraph()] = idx;
@@ -79,7 +82,7 @@ void	Heap::_heapify_up(size_t idx)
 void	Heap::_heapify_down(size_t idx)
 {
 	size_t	minc = this->_minChild(idx);
-	if (_v[minc] < _v[idx])
+	if (_v[minc]->getF() < _v[idx]->getF())
 	{
 		_indexes[_v[idx]->getGraph()] = minc;
 		_indexes[_v[minc]->getGraph()] = idx;
@@ -110,6 +113,28 @@ size_t	Heap::_minChild(size_t idx)
 	else if (right > this->_size-1)
 		return left;
 	else{
-		return ((_v[left] < _v[right]) ? left : right);
+		return ((_v[left]->getF() < _v[right]->getF()) ? left : right);
+	}
+}
+
+Node*	Heap::popMin()
+{
+	if (this->_size > 1)
+	{
+		_indexes.erase(_v[0]->getGraph());
+		_indexes[_v[this->_size -1]->getGraph()] = 0;
+		std::swap(this->_v[0], this->_v[this->_size-1]);
+		Node*	min = _v.back();
+		_v.pop_back();
+		this->_size--;
+		this->_heapify_down(0);
+		return (min);
+	}
+	else
+	{
+		Node* min = this->_v.back();
+		_v.pop_back();
+		this->_size = 0;
+		return(min);
 	}
 }

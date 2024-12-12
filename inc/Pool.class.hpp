@@ -1,17 +1,18 @@
 #ifndef POOL_HPP
 #define POOL_HPP
 
-#include <Node.class.hpp>
 #include <vector>
+#include "Node.class.hpp"
 
 #define POOL_SIZE 181440
+
 
 class Pool
 {
 	private:
 		Node		*_pool;
-		size_t		_idx;
-		size_t		_size;
+		std::size_t		_idx;
+		std::size_t		_size;
 
 	public:
 
@@ -23,11 +24,12 @@ class Pool
 class PoolStack
 {
 	private:
-		std::vector<Pool>	_poolStack;
-		size_t				_size;
+		std::vector<Pool*>	_poolStack;
+		std::size_t				_size;
 
 	public:
 		PoolStack();
+		~PoolStack() {};
 		Node*	next();
 };
 

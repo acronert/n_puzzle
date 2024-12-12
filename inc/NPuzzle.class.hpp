@@ -1,11 +1,12 @@
 #ifndef NPUZZLE_CLASS_HPP
 # define NPUZZLE_CLASS_HPP
 
-# include "Node.class.hpp"
-# include "Astar.hpp"
+//# include "Astar.hpp"
 # include "Solution.class.hpp"
 # include <chrono>
 # include <algorithm>
+#include "Pool.class.hpp"
+#include "Heap.hpp"
 
 class NPuzzle {
 	private:
@@ -14,6 +15,8 @@ class NPuzzle {
 		std::vector<uint32_t>	_start;
 		std::vector<uint32_t>	_goal;
 		uint16_t				_size;
+
+		Solution				_aStar(Node* start);
 
 	public:
 		NPuzzle();
