@@ -32,9 +32,9 @@ void	NPuzzle::run(char* filepath)
 		else if (type == UNIFORM)
 			str = "uniform";
 
-		std::cout << "Calculating path with " << str << " algorithm...\n";
 
 		if (_algoType[type]) {
+			std::cout << "Calculating path with " << str << " algorithm... ";
 			Node *node = new Node(_start, _goal, _size, type);
 
 			//auto start_time = std::chrono::high_resolution_clock::now();
@@ -52,7 +52,7 @@ void	NPuzzle::run(char* filepath)
 
 			delete node;
 
-			std::cout << "Path found\n";
+			std::cout << "Path found !\n";
 		}
 	}
 
@@ -68,32 +68,29 @@ void	NPuzzle::displaySolutions() {
 	// 5 is number of info lines
 	padding = std::max(0, 5 - _size) + 1;
 
-	// print start
-	// _solutions[0].displayStart(0);
-	// _solutions[0].displayGoal(0);
-
 		// get max iterations
 	for (int i = 0; i < n_solutions; i++) {
 		max = std::max(_solutions[i].getMoveCount(), max);
 	}
 
-	// while (1) {
-		for (int i = 0; i < max; i++) {
-			for (int j = 0; j < n_solutions; j++) {
-				// display paths
-				_solutions[j].displayPath(std::min(i, _solutions[j].getMoveCount() - 1) ,0);
-				for (int k = 0; k < padding; k++)
-					std::cout << "\n";
-				// display info
-				std::cout << "\033[" << _size + padding << "A";
-				_solutions[j].displayInfo((_size + 1) * 3);
-				for (int k = 0; k < (_size + padding) - 5; k++)
-					std::cout << "\n";
-			}
-			std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
-			usleep(300000);
+	for (int i = 0; i < max; i++) {
+		for (int j = 0; j < n_solutions; j++) {
+			// display paths
+			_solutions[j].displayPath(std::min(i, _solutions[j].getMoveCount() - 1) ,0);
+			for (int k = 0; k < padding; k++)
+				std::cout << "\n";
+			// display info
+			std::cout << "\033[" << _size + padding << "A";
+			_solutions[j].displayInfo((_size + 1) * 3);
+			for (int k = 0; k < (_size + padding) - 5; k++)
+				std::cout << "\n";
 		}
-	// }
+
+		if (i == max - 1)
+			break;
+		std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
+		usleep(400000);
+	}
 
 }
 
