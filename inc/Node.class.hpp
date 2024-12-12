@@ -14,7 +14,8 @@
 # define RESET		"\033[0m"
 # define RED		"\033[30;41m"
 # define GREEN		"\033[30;42m"
-# define YELLOW		"\033[30;43m"
+// # define YELLOW		"\033[30;43m"
+#define YELLOW "\033[30;48;5;226m"
 # define BLUE		"\033[30;44m"
 # define ORANGE		"\033[30;48;5;208m"
 
@@ -33,8 +34,10 @@ enum
 	UNIFORM
 };
 
+
+
 typedef struct	coord {
-	int 	x;
+	int 	x;			// -> 8 bit, +24bit
 	int 	y;
 } s_coord;
 
