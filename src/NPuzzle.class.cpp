@@ -154,10 +154,6 @@ void	NPuzzle::parseInput(char* filepath) {
 	_goal = build_goal(_size);
 }
 
-void	NPuzzle::generateRandomInput() {
-	throw std::invalid_argument("generate random input");
-}
-
 void	NPuzzle::parseOptions(char* option) {
 	for (int i = 1; option[i]; i++) {
 		if (option[i] == 's' || option[i] == 'S')
@@ -189,8 +185,6 @@ void	NPuzzle::parseOptions(char* option) {
 void	NPuzzle::parse(int argc, char** argv) {
 	bool	input_present = false;
 
-	if (argc < 1)
-		throw std::invalid_argument("No argument given");
 	for (int i = 1; i < argc; i++) {
 		if (argv[i][0] != '-') {
 			parseInput(argv[i]);
@@ -201,7 +195,7 @@ void	NPuzzle::parse(int argc, char** argv) {
 		}
 	}
 	if (!input_present)
-		generateRandomInput();
+		throw std::invalid_argument("No input given");
 	if (!_algoType[0] && !_algoType[1] && !_algoType[2])
 		_algoType[0] = true;
 

@@ -237,6 +237,9 @@ void	Node::display(int offset_x) {
 				case 2:
 					color = ORANGE;
 					break;
+				case 3:
+					color = DARK_ORANGE;
+					break;
 				default:
 					color = RED;
 					break;
