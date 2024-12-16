@@ -8,12 +8,13 @@ std::vector<uint16_t>	Node::_goal = {};
 
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
-Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType) :
-	_g(0), _h(0), _graph(graph), _parent(nullptr)
+Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuriType) :
+	_g(0), _h(0), _graph(graph), _parent(nullptr), _tiles()
 {
 	Node::_goal = goal;
 	Node::_size = size;
 	Node::_algoType = algoType;
+	Node::_heuristic = heuriType;
 
 	// Search '0' tile position
 	for (int i = 0; i < (int)_graph.size(); i++) {
@@ -24,7 +25,70 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 			break;
 		}
 	}
+	if (_heuristic == 2)
+		this->buildTiles();
 	this->h();
+}
+
+void	Node::buildTiles()
+{
+	this->_tiles.reserve(_size*_size);
+	for (int i =0; i < _size*_size; i++)
+	{
+		s_tile	new_tile;
+
+		new_tile.val = _graph[i];
+		for (int j = 0; j < _size*_size; j++)
+		{
+			if (_goal[j] == new_tile.val)
+			{
+				new_tile.goalIdx =j;
+				break;
+			}
+		}
+		new_tile.isRightCol = new_tile.goalIdx % _size == i % _size;
+		new_tile.isRightRow = new_tile.goalIdx / _size == i / _size;
+		_tiles.push_back(new_tile);
+	}
+	for (int line = 0; line < _size; line++)
+	{
+		for (int idx = 0; idx < _size; idx++)
+		{
+			if (!_tiles[line*_size + idx].isRightRow)
+				continue;
+			for (int j = idx+1; j < _size; j++)
+			{
+
+				if (!_tiles[line*_size + j].isRightRow)
+					continue;
+				if (_tiles[line*_size + idx].goalIdx % _size < _tiles[line*_size + j].goalIdx % _size)
+				{
+					_tiles[line*_size + idx].rowConflict.push_back(_tiles[line*_size + j].val);
+					_tiles[line*_size + j].rowConflict.push_back(_tiles[line*_size + idx].val);
+				}
+			}
+		}
+	}
+	for (int col = 0; col < _size; col++)
+	{
+		for (int idx = 0; idx < _size; idx++)
+		{
+			if (!_tiles[idx*_size + col].isRightCol)
+				continue;
+			for (int j = idx+1; j < _size; j++)
+			{
+				if (!_tiles[j*_size + col].isRightCol)
+					continue;
+				if (_tiles[idx*_size + col].goalIdx / _size > _tiles[j*_size + col].goalIdx / _size )
+				{
+					_tiles[idx*_size + col].colConflict.push_back( _tiles[j*_size + col].val);
+					_tiles[j*_size + col].colConflict.push_back( _tiles[idx*_size + col].val);
+				}	
+			}
+		}
+	}
+	
+	
 }
 
 Node::Node()
@@ -198,11 +262,25 @@ void Node::h1(s_coord &dest)
 }
 
 
+// int	Node::isRightCol(int idx)
+// {
+// 	uint16_t	val = this->_graph[idx];
+// 	int			goalidx = 0;
+// 	for (goalidx = 0; goalidx < this->_size*this->_size; goalidx++)
+// 	{
+// 		if (this->_goal[goalidx] == val)
+// 			break;
+// 	}
+// 	if (idx % this->_size != goalidx % this->_size)
+// 		return (0);
+// 	return ((goalidx / this->_size) - (idx / this->_size));
+// }
+
 
 //Manhattan + linear conflict
-void	Node::h2()
+void	Node::h2(s_coord &dest)
 {
-	this->_h = 0;
+
 }
 
 // Check number of correctly placed tiles

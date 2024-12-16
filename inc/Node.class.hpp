@@ -42,6 +42,18 @@ typedef struct	coord {
 	int8_t 	y;
 } s_coord;
 
+typedef struct tile
+{
+	uint16_t	val;
+	uint16_t	goalIdx;
+	bool		isRightCol;
+	bool		isRightRow;
+	std::vector<uint16_t>	rowConflict;
+	std::vector<uint16_t>	colConflict;	
+
+} s_tile;
+
+
 class Node {
 	private:
 
@@ -58,9 +70,16 @@ class Node {
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
-
+		
+		void	buildTiles();
+		
 		static int		_algoType;
 		static int		_heuristic;
+
+		// for linear conflicts
+		std::vector<s_tile>	_tiles;
+	
+
 
 
 
@@ -68,7 +87,7 @@ class Node {
 
 		// Coplien
 		Node();
-		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType);
+		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuri);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
@@ -98,7 +117,7 @@ class Node {
 		heuristic_func	heu[3];
 		void	h(s_coord &dest);
 		void	h1(s_coord &dest);
-		void	h2();
+		void	h2(s_coord &dest);
 		bool	isGoal() const;
 		void	display(int offset_x);
 		void	debug();
