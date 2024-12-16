@@ -24,7 +24,7 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 			break;
 		}
 	}
-	this->h();
+	this->h(this->_pos);
 }
 
 Node::Node()
@@ -180,6 +180,7 @@ void	Node::h(s_coord &dest) {
 	}
 }
 
+// Misplaced tiles
 void Node::h1(s_coord &dest)
 {
 	if (this->_parent == nullptr){

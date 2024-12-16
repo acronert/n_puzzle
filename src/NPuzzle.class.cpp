@@ -2,21 +2,20 @@
 #include "Pool.class.hpp"
 
 NPuzzle::NPuzzle() {
-	_algoType[0] = true;
+	_algoType[0] = false;
 	_algoType[1] = false;
 	_algoType[2] = false;
+
+	_heuristic = 0;
 }
 
 NPuzzle::~NPuzzle() {
 
 }
 
-void	NPuzzle::run(char* filepath)
+void	NPuzzle::run(int argc, char** argv)
 {
-	// Initialize
-	_start = parse(filepath);
-	_size = std::sqrt(_start.size());
-	_goal = build_goal(_size);
+	parse(argc, argv);
 
 	if (isSolvable())
 		std::cout << "Puzzle is solvable\n";
@@ -106,10 +105,10 @@ void	NPuzzle::displaySolutions() {
 
 }
 
-std::vector<uint16_t>	NPuzzle::parse(char* filepath) {
-	std::ifstream file(filepath);
-	std::string			line;
-	std::vector<uint16_t>	vec;
+void	NPuzzle::parseInput(char* filepath) {
+
+	std::ifstream 			file(filepath);
+	std::string				line;
 
 	if (!file)
 		throw std::invalid_argument("Invalid filepath");
@@ -128,31 +127,84 @@ std::vector<uint16_t>	NPuzzle::parse(char* filepath) {
 			}
 			// transform to int
 			int value = std::stoi(str);
-			vec.push_back(value);
+			_start.push_back(value);
 		}
 	}
-	if (!vec.size())
+	if (!_start.size())
 		throw std::invalid_argument("empty grid");
 
 	// extract size
-	unsigned int	size = vec[0];
+	_size = _start[0];
 
-	vec.erase(vec.begin());
-	if (vec.size() != size * size || !size)
+	_start.erase(_start.begin());
+	if (_start.size() != _size * _size || !_size)
 		throw std::invalid_argument("invalid size");
 
 	// check duplicates
 	std::set<int> uniqueNumbers;
 
-	for(int num : vec) {
-		if (num < 0 || num >= static_cast<int>(vec.size()))
+	for(int num : _start) {
+		if (num < 0 || num >= static_cast<int>(_start.size()))
 			throw std::invalid_argument("invalid value : out of range");
 		if (!uniqueNumbers.insert(num).second) {
 			throw std::invalid_argument("invalid value : duplicate");
 		}
 	}
 
-	return vec;
+	_goal = build_goal(_size);
+}
+
+void	NPuzzle::generateRandomInput() {
+	throw std::invalid_argument("generate random input");
+}
+
+void	NPuzzle::parseOptions(char* option) {
+	for (int i = 1; option[i]; i++) {
+		if (option[i] == 's' || option[i] == 'S')
+			_algoType[STANDARD] = true;
+		else if (option[i] == 'g' || option[i] == 'G')
+			_algoType[GREEDY] = true;
+		else if (option[i] == 'u' || option[i] == 'U')
+			_algoType[UNIFORM] = true;
+		else if (option[i] == 'h') {
+			i++;
+			if (option[i]) {
+				if (option[i] == '1')
+					_heuristic = 0;
+				else if (option[i] == '2')
+					_heuristic = 1;
+				else if (option[i] == '3')
+					_heuristic = 2;
+				else
+					throw std::invalid_argument("unknow heuristic");
+			}
+			else
+				throw std::invalid_argument("no heuristic specified");
+		}
+		else
+			throw std::invalid_argument("unknow option");
+	}
+}
+
+void	NPuzzle::parse(int argc, char** argv) {
+	bool	input_present = false;
+
+	if (argc < 1)
+		throw std::invalid_argument("No argument given");
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] != '-') {
+			parseInput(argv[i]);
+			input_present = true;
+		}
+		else {
+			parseOptions(argv[i]);
+		}
+	}
+	if (!input_present)
+		generateRandomInput();
+	if (!_algoType[0] && !_algoType[1] && !_algoType[2])
+		_algoType[0] = true;
+
 }
 
 // void	take_four(std::vector<Node *> &children, PoolStack &pool)
@@ -218,9 +270,6 @@ Solution	NPuzzle::_aStar(Node *start)
 
 	}
 	throw std::invalid_argument("No path found");
-
-
-
 }
 
 bool	NPuzzle::isSolvable() {
