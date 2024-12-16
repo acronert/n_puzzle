@@ -7,7 +7,6 @@ Pool::Pool(): _idx(0), _size(POOL_SIZE)
 
 Pool::~Pool()
 {
-	std::cout << "Pool destructor\n";
 }
 
 

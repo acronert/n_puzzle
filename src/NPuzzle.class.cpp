@@ -101,7 +101,7 @@ void	NPuzzle::displaySolutions() {
 		if (i == max - 1)
 			break;
 		std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
-		usleep(40000);
+		usleep(std::min(30000000 / max, 300000));
 	}
 
 }
