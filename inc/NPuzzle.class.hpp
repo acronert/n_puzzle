@@ -27,6 +27,7 @@ class NPuzzle {
 		~NPuzzle();
 		void	run(char* filepath);
 
+		bool	isSolvable();
 		std::vector<uint16_t>	parse(char* filepath);
 		void	displaySolutions();
 };

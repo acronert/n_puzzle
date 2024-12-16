@@ -18,6 +18,10 @@ void	NPuzzle::run(char* filepath)
 	_size = std::sqrt(_start.size());
 	_goal = build_goal(_size);
 
+	if (isSolvable())
+		std::cout << "Puzzle is solvable\n";
+	else
+		std::cout << "Puzzle is unsolvable\n";
 	// Display start
 	Node nodeDisplay = Node(_start, _goal, _size, 0);
 	std::cout << "Start:\n";
@@ -97,7 +101,7 @@ void	NPuzzle::displaySolutions() {
 		if (i == max - 1)
 			break;
 		std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
-		usleep(400000);
+		usleep(40000);
 	}
 
 }
@@ -219,40 +223,53 @@ Solution	NPuzzle::_aStar(Node *start)
 
 }
 
+bool	NPuzzle::isSolvable() {
 
+	// New Goal (unsnailed goal)
+	std::vector<uint16_t>	newGoal;
+	for (int i = 0; i < (int)_goal.size(); i++) {
+		if (!_goal[i])
+			newGoal.push_back(0);
+		else
+			newGoal.push_back(i + 1);
+	}
 
-
-
-/*
-{
-			size_t idx = 0;
-			if (openSet.getIndex(child->getGraph(), idx)) //si ds open set
-			{
-				if (child < openSet[idx])
-				{
-					openSet.modify(idx, child);
-				}
-				delete child;
-				child = NULL;
-			}
-			else
-			{
-				if (auto search = closeSet.find(child->getGraph()); search != closeSet.end())
-				{
-					if (child->getF() < search->second->getF())
-					{
-						openSet.insert(child);
-						closeSet.erase(child->getGraph()); //un pointeur disparait a regler plus tard
-					}
-					else
-					{
-						delete child;
-					}
-				}
-				else{
-					openSet.insert(child);
-				}
-			}
+	// newStart (unsnailed start)
+	std::vector<uint16_t>	newStart;
+	for (int i = 0; i < (int)_start.size(); i++) {
+		if (_start[i] == 0) {
+			newStart.push_back(0);
+			continue;
 		}
+		for (int j = 0; j < (int)_goal.size(); j++) {
+			if (_goal[j] == _start[i])
+				newStart.push_back(newGoal[j]);
+		}
+	}
 
-*/
+	// check solvability
+	int	n_inversions = 0;
+	for (std::vector<uint16_t>::iterator it = newStart.begin(); it != newStart.end(); it++) {
+		for (std::vector<uint16_t>::iterator it2 = it; it2 != newStart.end(); it2++){
+			if (*it > *it2 && *it && *it2)
+				n_inversions++;
+		}
+	}
+
+	int	empty_cell_row = 0;
+	for (int i = 0; i < (int)newStart.size(); i++) {
+		if (newStart[i] == 0) {
+			empty_cell_row = _size - (i / _size) - 1;
+			break;
+		}
+	}
+
+	if (_size % 2) {
+		if (n_inversions % 2 == 0)
+			return true;
+	} else {
+		if (empty_cell_row % 2 != n_inversions % 2)
+			return true;
+	}
+	return false;
+}

@@ -38,7 +38,6 @@ Node*	PoolStack::next()
 	{
 		if (_size > MAX_ALLOC)
 			throw std::overflow_error("too many pool allocations");
-		std::cout << "size = " << _size << "\n";
 		_poolStack.push_back(new Pool());
 		_size++;
 		return this->next();

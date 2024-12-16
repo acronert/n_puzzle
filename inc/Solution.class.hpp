@@ -23,7 +23,7 @@ class Solution {
 		void	setAlgoType(std::string algoType)	{ _algoType = algoType; }
 		void	setDuration(std::chrono::milliseconds duration)	{ _duration = duration; };
 
-		int	getMoveCount() { return _moveCount; }
+		int		getMoveCount() { return _moveCount; }
 
 		void	displayStart(int offset_x);
 		void	displayGoal(int offset_x);
