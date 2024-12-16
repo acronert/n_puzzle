@@ -8,6 +8,10 @@
 #include "Pool.class.hpp"
 #include "Heap.hpp"
 
+
+
+
+
 class NPuzzle {
 	private:
 		bool	_algoType[3];

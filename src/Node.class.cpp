@@ -92,7 +92,7 @@ std::vector<Node*>	Node::getChildren(PoolStack &pool){
 		child->swapTiles(this->_pos, dest);
 
 		child->_g++;
-		child->h();
+		child->h(dest);
 		child->_pos = dest;
 		child->_parent = this;
 
@@ -160,15 +160,49 @@ int	Node::distanceToGoal(int src) const {
 	return std::abs(src_pos.x - dest_pos.x) + std::abs(src_pos.y - dest_pos.y);
 }
 
-void	Node::h() {
-	this->_h = 0;
 
-	int graph_size = (int)this->_graph.size();
-	for (int src = 0; src < graph_size; src++) {
-		if (!this->_graph[src])
-			continue;
-		this->_h += distanceToGoal(src);
+
+//Manhattan distance
+void	Node::h(s_coord &dest) {
+
+	if (this->_parent == nullptr){
+		int graph_size = (int)this->_graph.size();
+		this->_h = 0;
+		for (int src = 0; src < graph_size; src++) {
+			if (!this->_graph[src])
+				continue;
+			this->_h += distanceToGoal(src);
+		}
 	}
+	else{
+		this->_h -= this->_parent->distanceToGoal(index(dest));
+		this->_h += this->distanceToGoal((index(this->_pos)));
+	}
+}
+
+void Node::h1(s_coord &dest)
+{
+	if (this->_parent == nullptr){
+		this->_h = 0;
+		int graph_size = _size * _size;
+		for (int i = 0; i < graph_size; i++)
+		{
+			if (this->_graph[i] != _goal[i])
+				_h++;
+		}
+	}
+	else{
+		this->_h -= (this->_parent->_graph[index(dest)] == _goal[index(dest)]);
+		this->_h += this->_graph[index(this->_pos)] == _goal[index(this->_pos)];
+	}
+}
+
+
+
+//Manhattan + linear conflict
+void	Node::h2()
+{
+	this->_h = 0;
 }
 
 // Check number of correctly placed tiles
