@@ -265,6 +265,7 @@ uint32_t	Node::getF() const
 	else
 		return _g;
 }
+
 void	Node::setG(uint32_t value)					{ _g = value; }
 void	Node::setGoal(std::vector<uint16_t> goal)	{ _goal = goal; }
 
