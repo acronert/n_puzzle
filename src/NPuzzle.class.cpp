@@ -2,8 +2,8 @@
 #include "Pool.class.hpp"
 
 NPuzzle::NPuzzle() {
-	_algoType[0] = false;
-	_algoType[1] = true;
+	_algoType[0] = true;
+	_algoType[1] = false;
 	_algoType[2] = false;
 }
 

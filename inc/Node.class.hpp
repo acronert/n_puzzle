@@ -60,6 +60,9 @@ class Node {
 		void	swapTiles(s_coord a, s_coord b);
 
 		static int		_algoType;
+		static int		_heuristic;
+
+
 
 	public:
 
@@ -91,7 +94,11 @@ class Node {
 		static bool			compare(const NodePtr &a, const NodePtr &b);
 		bool	operator<(const Node& other) const;
 		bool	operator>(const Node& other) const;
-		void	h();
+		typedef void (Node::*heuristic_func)(void);
+		heuristic_func	heu[3];
+		void	h(s_coord &dest);
+		void	h1(s_coord &dest);
+		void	h2();
 		bool	isGoal() const;
 		void	display(int offset_x);
 		void	debug();
