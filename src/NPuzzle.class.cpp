@@ -6,7 +6,7 @@ NPuzzle::NPuzzle() {
 	_algoType[1] = false;
 	_algoType[2] = false;
 
-	_heuristic = 0;
+	_heuristicType = 0;
 }
 
 NPuzzle::~NPuzzle() {
@@ -23,25 +23,30 @@ void	NPuzzle::run(int argc, char** argv)
 		std::cout << "Puzzle is unsolvable\n";
 
 	// Display start
-	Node nodeDisplay = Node(_start, _goal, _size, 0);
+	Node nodeDisplay = Node(_start, _goal, _size, 0, 0);
 	std::cout << "Start:" << std::endl;
 	nodeDisplay.display(0);
 	std::cout << "\n";
 
 	// Execute A*
-	for (int type = 0; type < 3; type++) {
-		std::string str = "standard";
-		if (type == GREEDY)
-			str = "greedy";
-		else if (type == UNIFORM)
-			str = "uniform";
+	for (int aType = 0; aType < 3; aType++) {
+		std::string strAlgo = "Standard A*";
+		if (aType == GREEDY)
+			strAlgo = "Greedy";
+		else if (aType == UNIFORM)
+			strAlgo = "Uniform Search";
 
-		if (_algoType[type]) {
-			Node *node = new Node(_start, _goal, _size, type);
+		std::string strHeuristic = "Manhattan Distance";
+		if (_heuristicType == MISPLACED)
+			strHeuristic = "Misplaced Tiles";
+		else if (_heuristicType == GASHNIG)
+			strHeuristic = "Gashnig";
+
+		if (_algoType[aType]) {
+			Node *node = new Node(_start, _goal, _size, aType, _heuristicType);
 
 			auto start_time = std::chrono::high_resolution_clock::now();
 
-			
 			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
 			try {
 				Solution sol = this->_aStar(node);
@@ -50,12 +55,13 @@ void	NPuzzle::run(int argc, char** argv)
 				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
 				sol.setDuration(duration);
-				sol.setAlgoType(str);
+				sol.setAlgoType(strAlgo);
+				sol.setHeurisicType(strHeuristic);
 				_solutions.push_back(sol);
 
 				delete node;
 
-				std::cout << str << " path found !\n";
+				std::cout << strAlgo << " path found !\n";
 
 			}
 			catch (std::exception &e) {
@@ -77,7 +83,7 @@ void	NPuzzle::displaySolutions() {
 	int	padding;
 
 	// 5 is number of info lines
-	padding = std::max(0, 5 - _size) + 1;
+	padding = std::max(0, 6 - _size) + 1;
 
 		// get max iterations
 	for (int i = 0; i < n_solutions; i++) {
@@ -93,14 +99,14 @@ void	NPuzzle::displaySolutions() {
 			// display info
 			std::cout << "\033[" << _size + padding << "A";
 			_solutions[j].displayInfo((_size + 1) * 3);
-			for (int k = 0; k < (_size + padding) - 5; k++)
+			for (int k = 0; k < (_size + padding) - 6; k++)
 				std::cout << "\n";
 		}
 
 		if (i == max - 1)
 			break;
 		std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
-		usleep(std::min(30000000 / max, 300000));
+		// usleep(std::min(30000000 / max, 300000));
 	}
 
 }
@@ -165,12 +171,12 @@ void	NPuzzle::parseOptions(char* option) {
 		else if (option[i] == 'h') {
 			i++;
 			if (option[i]) {
-				if (option[i] == '1')
-					_heuristic = 0;
+				if (option[i] == '0')
+					_heuristicType = 0;
+				else if (option[i] == '1')
+					_heuristicType = 1;
 				else if (option[i] == '2')
-					_heuristic = 1;
-				else if (option[i] == '3')
-					_heuristic = 2;
+					_heuristicType = 2;
 				else
 					throw std::invalid_argument("unknow heuristic");
 			}

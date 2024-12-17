@@ -11,7 +11,7 @@
 class NPuzzle {
 	private:
 		bool	_algoType[3];
-		int		_heuristic;
+		int		_heuristicType;
 		std::vector<Solution>	_solutions;
 		std::vector<uint16_t>	_start;
 		std::vector<uint16_t>	_goal;

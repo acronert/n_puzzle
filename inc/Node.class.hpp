@@ -34,6 +34,13 @@ enum
 	UNIFORM
 };
 
+enum
+{
+	MANHATTAN,
+	MISPLACED,
+	GASHNIG
+};
+
 typedef struct	coord {
 	int8_t 	x;			// -> 8 bit, +24bit
 	int8_t 	y;
@@ -57,13 +64,13 @@ class Node {
 		void	swapTiles(s_coord a, s_coord b);
 
 		static int		_algoType;
-		static int		_heuristic;
+		static int		_heuristicType;
 
 	public:
 
 		// Coplien
 		Node();
-		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType);
+		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuristicType);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
@@ -89,12 +96,15 @@ class Node {
 		static bool			compare(const NodePtr &a, const NodePtr &b);
 		bool	operator<(const Node& other) const;
 		bool	operator>(const Node& other) const;
+
 		typedef void (Node::*heuristic_func)(void);
 		heuristic_func	heu[3];
+
 		void	h(s_coord &dest);
-		void	h1(s_coord &dest);
-		void	h2();
-		void	h3();
+		void	manhattanDistance(s_coord &dest);
+		void 	misplacedTiles(s_coord &dest);
+		void	gashnig(s_coord &dest);
+
 		bool	isGoal() const;
 		void	display(int offset_x);
 		void	debug();

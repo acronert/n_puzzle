@@ -25,6 +25,7 @@ void	Solution::displayGoal(int offset_x) {
 
 void	Solution::displayInfo(int offset_x) {
 	std::cout << "\033[" << offset_x << "C" << "Algorithm : " << _algoType << std::endl;
+	std::cout << "\033[" << offset_x << "C" << "Heuristic : " << _heuristicType << std::endl;
 	std::cout << "\033[" << offset_x << "C" << "Time complexity : " << _loopCount << std::endl;
 	std::cout << "\033[" << offset_x << "C" << "Space complexity : " << _maxNode << std::endl;
 	std::cout << "\033[" << offset_x << "C" << "Number of moves : " << _moveCount << std::endl;

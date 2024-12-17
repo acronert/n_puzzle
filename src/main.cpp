@@ -17,8 +17,9 @@ int	main(int argc, char** argv) {
 		std::cout << "		-g	greedy A*" << std::endl;
 		std::cout << "		-u	uniform A*" << std::endl;
 		std::cout << "	Heuristics (choose one) :" << std::endl;
-		std::cout << "		-h1	Manhattan Distance" << std::endl;
-		std::cout << "		-h2	Misplaced Tiles" << std::endl;
+		std::cout << "		-h0	Manhattan Distance" << std::endl;
+		std::cout << "		-h1	Misplaced Tiles" << std::endl;
+		std::cout << "		-h2	Gashnig" << std::endl;
 		std::cout << "		-h3	Linear Conflict" << std::endl;
 	}
 	return 0;
