@@ -94,6 +94,7 @@ class Node {
 		void	h(s_coord &dest);
 		void	h1(s_coord &dest);
 		void	h2();
+		void	h3();
 		bool	isGoal() const;
 		void	display(int offset_x);
 		void	debug();

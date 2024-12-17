@@ -15,6 +15,7 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 	Node::_size = size;
 	Node::_algoType = algoType;
 
+
 	// Search '0' tile position
 	for (int i = 0; i < (int)_graph.size(); i++) {
 		if (_graph[i] == 0) {
@@ -121,13 +122,9 @@ bool	Node::operator>(const Node& other) const {
 	return this->getF() > other.getF();
 }
 
-// temporaire
 bool	Node::compare(const NodePtr &a, const NodePtr &b) {
 	return a->getF() < b->getF();
 }
-
-
-
 
 bool	Node::isGoal() const {
 	return this->_graph == _goal;
@@ -159,8 +156,6 @@ int	Node::distanceToGoal(int src) const {
 
 	return std::abs(src_pos.x - dest_pos.x) + std::abs(src_pos.y - dest_pos.y);
 }
-
-
 
 //Manhattan distance
 void	Node::h(s_coord &dest) {
@@ -218,6 +213,39 @@ void	Node::h2()
 // 	}
 // 	this->_h = new_h;
 // }
+
+// Gaschnig
+void	Node::h3() {
+	std::vector<uint16_t> tmp = _graph;
+	int	blank_idx = index(this->_pos);
+	int h = 0;
+
+	while (tmp != _goal) {
+		if (tmp[blank_idx] == _goal[blank_idx])	// emptytile is where it should be
+		{
+			// switch it with a misplaced tile
+			for (std::size_t i = 0; i < tmp.size(); i++) {
+				if (tmp[i] != _goal[i]) {
+					std::swap(tmp[i], tmp[blank_idx]);
+					blank_idx = i;
+					break;
+				}
+			}
+		} else {
+			// find the tile that should be in blank pos
+			int target = _goal[blank_idx];
+			for (std::size_t i = 0; i < tmp.size(); i++) {
+				if (tmp[i] == target){
+					std::swap(tmp[i], tmp[blank_idx]);
+					blank_idx = i;
+					break;
+				}
+			}
+		}
+		h++;
+	}
+	this->_h = h;
+}
 
 void	Node::display(int offset_x) {
 	for (int y = 0; y < (int)_size; y++) {

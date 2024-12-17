@@ -21,9 +21,10 @@ void	NPuzzle::run(int argc, char** argv)
 		std::cout << "Puzzle is solvable\n";
 	else
 		std::cout << "Puzzle is unsolvable\n";
+
 	// Display start
 	Node nodeDisplay = Node(_start, _goal, _size, 0);
-	std::cout << "Start:\n";
+	std::cout << "Start:" << std::endl;
 	nodeDisplay.display(0);
 	std::cout << "\n";
 
@@ -34,7 +35,6 @@ void	NPuzzle::run(int argc, char** argv)
 			str = "greedy";
 		else if (type == UNIFORM)
 			str = "uniform";
-
 
 		if (_algoType[type]) {
 			Node *node = new Node(_start, _goal, _size, type);
@@ -267,7 +267,6 @@ Solution	NPuzzle::_aStar(Node *start)
 }
 
 bool	NPuzzle::isSolvable() {
-
 	// New Goal (unsnailed goal)
 	std::vector<uint16_t>	newGoal;
 	for (int i = 0; i < (int)_goal.size(); i++) {
