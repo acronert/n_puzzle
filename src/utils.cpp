@@ -51,3 +51,23 @@ std::vector<uint16_t>	build_goal(uint16_t size)
 	}
 	return inputs;
 }
+
+
+std::string	formatSize(size_t bytes) {
+	std::string units[] = {"o", "Ko", "Mo", "Go", "To"};
+	double size = static_cast<double>(bytes);
+	size_t unitIndex = 0;
+
+	while (size > 1024) {
+		size /= 1024;
+		unitIndex++;
+	}
+
+    std::ostringstream result;
+	if (units[unitIndex] == "o")
+		result << size << " " << units[unitIndex];
+	else
+		result << std::fixed << std::setprecision(2) << size << " " << units[unitIndex];
+
+    return result.str();
+}

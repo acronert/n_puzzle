@@ -7,7 +7,6 @@
 #define POOL_SIZE 1000000
 #define MAX_ALLOC 40
 
-
 class Pool
 {
 	private:

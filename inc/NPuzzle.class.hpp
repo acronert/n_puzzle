@@ -5,8 +5,10 @@
 # include "Solution.class.hpp"
 # include <chrono>
 # include <algorithm>
-#include "Pool.class.hpp"
-#include "Heap.hpp"
+# include "Pool.class.hpp"
+# include "Heap.hpp"
+
+# define DISPLAY_INFO_LINES	6
 
 class NPuzzle {
 	private:

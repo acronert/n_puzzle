@@ -20,4 +20,6 @@ std::vector<uint16_t>	parse(char* filepath);
 
 void	replay(std::vector<Node> path);
 
+std::string	formatSize(size_t bytes);
+
 #endif

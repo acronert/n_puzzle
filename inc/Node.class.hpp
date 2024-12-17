@@ -57,14 +57,13 @@ class Node {
 
 		static size_t		_size;
 		static std::vector<uint16_t>	_goal;
-
+		static int		_algoType;
+		static int		_heuristicType;
 
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
 
-		static int		_algoType;
-		static int		_heuristicType;
 
 	public:
 

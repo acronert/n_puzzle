@@ -43,12 +43,11 @@ void	NPuzzle::run(int argc, char** argv)
 			strHeuristic = "Gashnig";
 
 		if (_algoType[aType]) {
+
 			Node *node = new Node(_start, _goal, _size, aType, _heuristicType);
-
-			auto start_time = std::chrono::high_resolution_clock::now();
-
-			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
 			try {
+
+				auto start_time = std::chrono::high_resolution_clock::now();
 				Solution sol = this->_aStar(node);
 
 				auto end_time = std::chrono::high_resolution_clock::now();
@@ -62,7 +61,6 @@ void	NPuzzle::run(int argc, char** argv)
 				delete node;
 
 				std::cout << strAlgo << " path found !\n";
-
 			}
 			catch (std::exception &e) {
 				delete node;
@@ -71,7 +69,6 @@ void	NPuzzle::run(int argc, char** argv)
 			}
 		}
 	}
-
 
 	displaySolutions();
 }
@@ -82,8 +79,7 @@ void	NPuzzle::displaySolutions() {
 	int n_solutions = _solutions.size();
 	int	padding;
 
-	// 5 is number of info lines
-	padding = std::max(0, 6 - _size) + 1;
+	padding = std::max(0, DISPLAY_INFO_LINES - _size) + 1;
 
 		// get max iterations
 	for (int i = 0; i < n_solutions; i++) {
@@ -99,14 +95,14 @@ void	NPuzzle::displaySolutions() {
 			// display info
 			std::cout << "\033[" << _size + padding << "A";
 			_solutions[j].displayInfo((_size + 1) * 3);
-			for (int k = 0; k < (_size + padding) - 6; k++)
+			for (int k = 0; k < (_size + padding) - DISPLAY_INFO_LINES; k++)
 				std::cout << "\n";
 		}
 
 		if (i == max - 1)
 			break;
 		std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
-		// usleep(std::min(30000000 / max, 300000));
+		usleep(std::min(30000000 / max, 300000));
 	}
 
 }
@@ -231,6 +227,10 @@ Solution	NPuzzle::_aStar(Node *start)
 	while (openSet.getSize() > 0)
 	{
 		loop_count++;
+		// if (closeSet.size() > max_nodes)
+		// {
+		// 	max_nodes = closeSet.size();
+		// }
 		if (openSet.getSize() > max_nodes)
 		{
 			max_nodes = openSet.getSize();
