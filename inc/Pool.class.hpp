@@ -5,8 +5,7 @@
 #include "Node.class.hpp"
 
 #define POOL_SIZE 1000000
-#define MAX_ALLOC 50
-
+#define MAX_ALLOC 40
 
 class Pool
 {

@@ -5,16 +5,15 @@
 # include "Solution.class.hpp"
 # include <chrono>
 # include <algorithm>
-#include "Pool.class.hpp"
-#include "Heap.hpp"
+# include "Pool.class.hpp"
+# include "Heap.hpp"
 
-
-
-
+# define DISPLAY_INFO_LINES	6
 
 class NPuzzle {
 	private:
 		bool	_algoType[3];
+		int		_heuristicType;
 		std::vector<Solution>	_solutions;
 		std::vector<uint16_t>	_start;
 		std::vector<uint16_t>	_goal;
@@ -25,10 +24,16 @@ class NPuzzle {
 	public:
 		NPuzzle();
 		~NPuzzle();
-		void	run(char* filepath);
+		void	run(int argc, char** argv);
 
 		bool	isSolvable();
 		std::vector<uint16_t>	parse(char* filepath);
+
+		void	parse(int argc, char** argv);
+		void	parseInput(char* filepath);
+		void	generateRandomInput();
+		void	parseOptions(char* option);
+
 		void	displaySolutions();
 };
 

@@ -9,6 +9,7 @@ class Solution {
 	private:
 		std::vector<Node>			_path;
 		std::string					_algoType;
+		std::string					_heuristicType;
 		int							_size;
 		int							_loopCount;
 		int							_maxNode;
@@ -21,7 +22,8 @@ class Solution {
 		~Solution();
 
 		void	setAlgoType(std::string algoType)	{ _algoType = algoType; }
-		void	setDuration(std::chrono::milliseconds duration)	{ _duration = duration; };
+		void	setHeurisicType(std::string heuristicType)	{ _heuristicType = heuristicType; }
+		void	setDuration(std::chrono::milliseconds duration)	{ _duration = duration; }
 
 		int		getMoveCount() { return _moveCount; }
 

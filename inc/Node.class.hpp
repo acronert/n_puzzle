@@ -12,19 +12,18 @@
 
 # define	INFINITY_F std::numeric_limits<float>::infinity()
 
-# define RESET		"\033[0m"
-# define RED		"\033[30;41m"
-# define GREEN		"\033[30;42m"
-// # define YELLOW		"\033[30;43m"
-#define YELLOW "\033[30;48;5;226m"
-# define BLUE		"\033[30;44m"
-# define ORANGE		"\033[30;48;5;208m"
+# define	RESET		"\033[0m"
+# define	RED			"\033[30;48;5;196m"
+# define	DARK_ORANGE	"\033[30;48;5;208m"
+# define	ORANGE		"\033[30;48;5;214m"
+# define	YELLOW		"\033[30;48;5;226m"
+# define	GREEN		"\033[30;42m"
+# define	BLUE		"\033[30;44m"
 
 # define	UP 1
 # define	DOWN 2
 # define	LEFT 3
 # define	RIGHT 4
-
 
 class Pool;
 class PoolStack;
@@ -36,7 +35,12 @@ enum
 	UNIFORM
 };
 
-
+enum
+{
+	MANHATTAN,
+	MISPLACED,
+	GASHNIG
+};
 
 typedef struct	coord {
 	int8_t 	x;			// -> 8 bit, +24bit
@@ -67,7 +71,8 @@ class Node {
 
 		static size_t		_size;
 		static std::vector<uint16_t>	_goal;
-
+		static int		_algoType;
+		static int		_heuristicType;
 
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
@@ -83,15 +88,10 @@ class Node {
 		bool	isColConflict(int idx1, int idx2);
 		bool	isRowConflict(int idx1, int idx2);
 
-		
-		
-		
-		static int		_algoType;
-		static int		_heuristic;
-
 		// for linear conflicts
 		std::vector<s_tile>	_tiles;
 	
+
 
 
 
@@ -100,7 +100,7 @@ class Node {
 
 		// Coplien
 		Node();
-		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuri);
+		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuristicType);
 		~Node();
 		Node(const Node& other);
 		Node& operator=(const Node& other);
@@ -126,11 +126,15 @@ class Node {
 		static bool			compare(const NodePtr &a, const NodePtr &b);
 		bool	operator<(const Node& other) const;
 		bool	operator>(const Node& other) const;
+
 		typedef void (Node::*heuristic_func)(void);
 		heuristic_func	heu[3];
+
 		void	h(s_coord &dest);
-		void	h1(s_coord &dest);
-		void	h2(s_coord &dest);
+		void	manhattanDistance(s_coord &dest);
+		void 	misplacedTiles(s_coord &dest);
+		void	gashnig(s_coord &dest);
+
 		bool	isGoal() const;
 		void	display(int offset_x);
 		void	debug();

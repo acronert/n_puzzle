@@ -2,62 +2,65 @@
 #include "Pool.class.hpp"
 
 NPuzzle::NPuzzle() {
-	_algoType[0] = true;
+	_algoType[0] = false;
 	_algoType[1] = false;
 	_algoType[2] = false;
+
+	_heuristicType = 0;
 }
 
 NPuzzle::~NPuzzle() {
 
 }
 
-void	NPuzzle::run(char* filepath)
+void	NPuzzle::run(int argc, char** argv)
 {
-	// Initialize
-	_start = parse(filepath);
-	_size = std::sqrt(_start.size());
-	_goal = build_goal(_size);
+	parse(argc, argv);
 
 	if (isSolvable())
 		std::cout << "Puzzle is solvable\n";
 	else
 		std::cout << "Puzzle is unsolvable\n";
+
 	// Display start
 	Node nodeDisplay = Node(_start, _goal, _size, 0, 0);
-	std::cout << "Start:\n";
+	std::cout << "Start:" << std::endl;
 	nodeDisplay.display(0);
 	std::cout << "\n";
 
 	// Execute A*
-	for (int type = 0; type < 3; type++) {
-		std::string str = "standard";
-		if (type == GREEDY)
-			str = "greedy";
-		else if (type == UNIFORM)
-			str = "uniform";
+	for (int aType = 0; aType < 3; aType++) {
+		std::string strAlgo = "Standard A*";
+		if (aType == GREEDY)
+			strAlgo = "Greedy";
+		else if (aType == UNIFORM)
+			strAlgo = "Uniform Search";
 
+		std::string strHeuristic = "Manhattan Distance";
+		if (_heuristicType == MISPLACED)
+			strHeuristic = "Misplaced Tiles";
+		else if (_heuristicType == GASHNIG)
+			strHeuristic = "Gashnig";
 
-		if (_algoType[type]) {
-			Node *node = new Node(_start, _goal, _size, type, 0);
+		if (_algoType[aType]) {
 
-			auto start_time = std::chrono::high_resolution_clock::now();
-
-			
-			//Solution sol = astar<Node, std::vector<uint32_t>>(node);
+			Node *node = new Node(_start, _goal, _size, aType, _heuristicType);
 			try {
+
+				auto start_time = std::chrono::high_resolution_clock::now();
 				Solution sol = this->_aStar(node);
 
 				auto end_time = std::chrono::high_resolution_clock::now();
 				auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time);
 
 				sol.setDuration(duration);
-				sol.setAlgoType(str);
+				sol.setAlgoType(strAlgo);
+				sol.setHeurisicType(strHeuristic);
 				_solutions.push_back(sol);
 
 				delete node;
 
-				std::cout << str << " path found !\n";
-
+				std::cout << strAlgo << " path found !\n";
 			}
 			catch (std::exception &e) {
 				delete node;
@@ -66,7 +69,6 @@ void	NPuzzle::run(char* filepath)
 			}
 		}
 	}
-
 
 	displaySolutions();
 }
@@ -77,8 +79,7 @@ void	NPuzzle::displaySolutions() {
 	int n_solutions = _solutions.size();
 	int	padding;
 
-	// 5 is number of info lines
-	padding = std::max(0, 5 - _size) + 1;
+	padding = std::max(0, DISPLAY_INFO_LINES - _size) + 1;
 
 		// get max iterations
 	for (int i = 0; i < n_solutions; i++) {
@@ -94,22 +95,22 @@ void	NPuzzle::displaySolutions() {
 			// display info
 			std::cout << "\033[" << _size + padding << "A";
 			_solutions[j].displayInfo((_size + 1) * 3);
-			for (int k = 0; k < (_size + padding) - 5; k++)
+			for (int k = 0; k < (_size + padding) - DISPLAY_INFO_LINES; k++)
 				std::cout << "\n";
 		}
 
 		if (i == max - 1)
 			break;
 		std::cout << "\033[" << (_size + padding) * n_solutions << "A";    // Move cursor up one line
-		usleep(40000);
+		usleep(std::min(30000000 / max, 300000));
 	}
 
 }
 
-std::vector<uint16_t>	NPuzzle::parse(char* filepath) {
-	std::ifstream file(filepath);
-	std::string			line;
-	std::vector<uint16_t>	vec;
+void	NPuzzle::parseInput(char* filepath) {
+
+	std::ifstream 			file(filepath);
+	std::string				line;
 
 	if (!file)
 		throw std::invalid_argument("Invalid filepath");
@@ -128,31 +129,78 @@ std::vector<uint16_t>	NPuzzle::parse(char* filepath) {
 			}
 			// transform to int
 			int value = std::stoi(str);
-			vec.push_back(value);
+			_start.push_back(value);
 		}
 	}
-	if (!vec.size())
+	if (!_start.size())
 		throw std::invalid_argument("empty grid");
 
 	// extract size
-	unsigned int	size = vec[0];
+	_size = _start[0];
 
-	vec.erase(vec.begin());
-	if (vec.size() != size * size || !size)
+	_start.erase(_start.begin());
+	if (_start.size() != _size * _size || !_size)
 		throw std::invalid_argument("invalid size");
 
 	// check duplicates
 	std::set<int> uniqueNumbers;
 
-	for(int num : vec) {
-		if (num < 0 || num >= static_cast<int>(vec.size()))
+	for(int num : _start) {
+		if (num < 0 || num >= static_cast<int>(_start.size()))
 			throw std::invalid_argument("invalid value : out of range");
 		if (!uniqueNumbers.insert(num).second) {
 			throw std::invalid_argument("invalid value : duplicate");
 		}
 	}
 
-	return vec;
+	_goal = build_goal(_size);
+}
+
+void	NPuzzle::parseOptions(char* option) {
+	for (int i = 1; option[i]; i++) {
+		if (option[i] == 's' || option[i] == 'S')
+			_algoType[STANDARD] = true;
+		else if (option[i] == 'g' || option[i] == 'G')
+			_algoType[GREEDY] = true;
+		else if (option[i] == 'u' || option[i] == 'U')
+			_algoType[UNIFORM] = true;
+		else if (option[i] == 'h') {
+			i++;
+			if (option[i]) {
+				if (option[i] == '0')
+					_heuristicType = 0;
+				else if (option[i] == '1')
+					_heuristicType = 1;
+				else if (option[i] == '2')
+					_heuristicType = 2;
+				else
+					throw std::invalid_argument("unknow heuristic");
+			}
+			else
+				throw std::invalid_argument("no heuristic specified");
+		}
+		else
+			throw std::invalid_argument("unknow option");
+	}
+}
+
+void	NPuzzle::parse(int argc, char** argv) {
+	bool	input_present = false;
+
+	for (int i = 1; i < argc; i++) {
+		if (argv[i][0] != '-') {
+			parseInput(argv[i]);
+			input_present = true;
+		}
+		else {
+			parseOptions(argv[i]);
+		}
+	}
+	if (!input_present)
+		throw std::invalid_argument("No input given");
+	if (!_algoType[0] && !_algoType[1] && !_algoType[2])
+		_algoType[0] = true;
+
 }
 
 // void	take_four(std::vector<Node *> &children, PoolStack &pool)
@@ -179,6 +227,10 @@ Solution	NPuzzle::_aStar(Node *start)
 	while (openSet.getSize() > 0)
 	{
 		loop_count++;
+		// if (closeSet.size() > max_nodes)
+		// {
+		// 	max_nodes = closeSet.size();
+		// }
 		if (openSet.getSize() > max_nodes)
 		{
 			max_nodes = openSet.getSize();
@@ -218,13 +270,9 @@ Solution	NPuzzle::_aStar(Node *start)
 
 	}
 	throw std::invalid_argument("No path found");
-
-
-
 }
 
 bool	NPuzzle::isSolvable() {
-
 	// New Goal (unsnailed goal)
 	std::vector<uint16_t>	newGoal;
 	for (int i = 0; i < (int)_goal.size(); i++) {

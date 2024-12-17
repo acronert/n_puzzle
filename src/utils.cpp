@@ -52,61 +52,22 @@ std::vector<uint16_t>	build_goal(uint16_t size)
 	return inputs;
 }
 
-// std::vector<uint32_t>	parse(char* filepath) {
-// 	std::ifstream file(filepath);
-// 	std::string			line;
-// 	std::vector<uint32_t>	vec;
 
-// 	if (!file)
-// 		throw std::invalid_argument("Invalid filepath");
-// 	while (std::getline(file, line)) {
-// 		std::istringstream	iss(line);
-// 		std::string			str;
+std::string	formatSize(size_t bytes) {
+	std::string units[] = {"o", "Ko", "Mo", "Go", "To"};
+	double size = static_cast<double>(bytes);
+	size_t unitIndex = 0;
 
-// 		while (iss >> str) {
-// 			// remove comments
-// 			if (str[0] == '#')
-// 				break;
-// 			// check for non digit characters
-// 			for (auto c : str) {
-// 				if (!std::isdigit(c))
-// 					throw std::invalid_argument("Not a digit");
-// 			}
-// 			// transform to int
-// 			int value = std::stoi(str);
-// 			vec.push_back(value);
-// 		}
-// 	}
-// 	if (!vec.size())
-// 		throw std::invalid_argument("empty grid");
+	while (size > 1024) {
+		size /= 1024;
+		unitIndex++;
+	}
 
-// 	// extract size
-// 	unsigned int	size = vec[0];
+    std::ostringstream result;
+	if (units[unitIndex] == "o")
+		result << size << " " << units[unitIndex];
+	else
+		result << std::fixed << std::setprecision(2) << size << " " << units[unitIndex];
 
-// 	vec.erase(vec.begin());
-// 	if (vec.size() != size * size || !size)
-// 		throw std::invalid_argument("invalid size");
-
-// 	// check duplicates
-// 	std::set<int> uniqueNumbers;
-
-// 	for(int num : vec) {
-// 		if (num < 0 || num >= static_cast<int>(vec.size()))
-// 			throw std::invalid_argument("invalid value : out of range");
-// 		if (!uniqueNumbers.insert(num).second) {
-// 			throw std::invalid_argument("invalid value : duplicate");
-// 		}
-// 	}
-
-// 	return vec;
-// }
-
-
-// void	replay(std::vector<Node> path) {
-// 	for (auto node : path) {
-// 		node.display(10);
-// 		usleep(400000);
-
-// 			std::cout << "\033[" << node.getSize() << "A";    // Move cursor up one line
-// 	}
-// }
+    return result.str();
+}

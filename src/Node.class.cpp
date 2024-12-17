@@ -4,7 +4,7 @@
 
 size_t	Node::_size = 0;
 int		Node::_algoType = 0;
-int		Node::_heuristic = 0;
+int		Node::_heuristicType = 0;
 std::vector<uint16_t>	Node::_goal = {};
 
 
@@ -16,7 +16,8 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 	Node::_goal = goal;
 	Node::_size = size;
 	Node::_algoType = algoType;
-	Node::_heuristic = heuriType;
+	Node::_heuristicType = heuriType;
+
 
 	// Search '0' tile position
 	for (int i = 0; i < (int)_graph.size(); i++) {
@@ -27,9 +28,9 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 			break;
 		}
 	}
-	if (_heuristic == 2)
+	if (_heuristicType == LINEAR_CONFLICT)
 		this->buildTiles();
-	//this->h();
+	this->h(this->_pos);
 }
 
 void	Node::debugTiles()
@@ -113,6 +114,7 @@ void	Node::buildTiles()
 			}
 		}
 	}	
+	this->h(this->_pos);
 }
 
 Node::Node()
@@ -209,13 +211,9 @@ bool	Node::operator>(const Node& other) const {
 	return this->getF() > other.getF();
 }
 
-// temporaire
 bool	Node::compare(const NodePtr &a, const NodePtr &b) {
 	return a->getF() < b->getF();
 }
-
-
-
 
 bool	Node::isGoal() const {
 	return this->_graph == _goal;
@@ -249,9 +247,18 @@ int	Node::distanceToGoal(int src) const {
 }
 
 
+void	Node::h(s_coord &dest) {
+	if (_heuristicType == MANHATTAN)
+		manhattanDistance(dest);
+	else if (_heuristicType == MISPLACED)
+		misplacedTiles(dest);
+	else if (_heuristicType == GASHNIG)
+		gashnig(dest);
+
+}
 
 //Manhattan distance
-void	Node::h(s_coord &dest) {
+void	Node::manhattanDistance(s_coord &dest) {
 
 	if (this->_parent == nullptr){
 		int graph_size = (int)this->_graph.size();
@@ -268,7 +275,8 @@ void	Node::h(s_coord &dest) {
 	}
 }
 
-void Node::h1(s_coord &dest)
+// Misplaced tiles
+void Node::misplacedTiles(s_coord &dest)
 {
 	if (this->_parent == nullptr){
 		this->_h = 0;
@@ -302,9 +310,9 @@ void Node::h1(s_coord &dest)
 
 
 //Manhattan + linear conflict
-// void	Node::h2(s_coord &dest)
+// void	Node::h2()
 // {
-
+	// this->_h = 0;
 // }
 
 // Check number of correctly placed tiles
@@ -319,6 +327,56 @@ void Node::h1(s_coord &dest)
 // 	}
 // 	this->_h = new_h;
 // }
+
+// Gaschnig
+void	Node::gashnig(s_coord &dest) {
+	std::vector<uint16_t> tmp = _graph;
+	int	blank_idx = index(this->_pos);
+
+	// START H
+	if (this->_parent == nullptr) {
+		_h = 0;
+		while (tmp != _goal) {
+			if (tmp[blank_idx] == _goal[blank_idx])	// emptytile is where it should be
+			{
+				// switch it with a misplaced tile
+				for (std::size_t i = 0; i < tmp.size(); i++) {
+					if (tmp[i] != _goal[i]) {
+						std::swap(tmp[i], tmp[blank_idx]);
+						blank_idx = i;
+						break;
+					}
+				}
+			} else {
+				// find the tile that should be in blank pos
+				int target = _goal[blank_idx];
+				for (std::size_t i = 0; i < tmp.size(); i++) {
+					if (tmp[i] == target){
+						std::swap(tmp[i], tmp[blank_idx]);
+						blank_idx = i;
+						break;
+					}
+				}
+			}
+			_h++;
+		}
+	}
+	else {
+		// if parent 0 was placed
+		if (_goal[index(dest)] == 0)
+			_h--;
+		// else if child 0 is placed
+		else if (_goal[index(_pos)] == 0)
+			_h++;
+
+		// if moved tile was placed
+		if (_graph[index(_pos)] == _goal[index(dest)])
+			_h++;
+		// else if moved tile is placed
+		if (_graph[index(_pos)] == _goal[index(_pos)])
+			_h--;
+	}
+}
 
 void	Node::display(int offset_x) {
 	for (int y = 0; y < (int)_size; y++) {
@@ -337,6 +395,9 @@ void	Node::display(int offset_x) {
 					break;
 				case 2:
 					color = ORANGE;
+					break;
+				case 3:
+					color = DARK_ORANGE;
 					break;
 				default:
 					color = RED;
