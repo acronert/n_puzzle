@@ -4,7 +4,9 @@
 
 size_t	Node::_size = 0;
 int		Node::_algoType = 0;
+int		Node::_heuristic = 0;
 std::vector<uint16_t>	Node::_goal = {};
+
 
 // COPLIEN /////////////////////////////////////////////////////////////////////
 
@@ -27,18 +29,38 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 	}
 	if (_heuristic == 2)
 		this->buildTiles();
-	this->h();
+	//this->h();
+}
+
+void	Node::debugTiles()
+{
+	for (auto til: _tiles)
+	{
+		std::cout << "value = " << til.val << " goal index = " << til.goalIdx << " isCol, is Row " << til.isRightCol << ", " << til.isRightRow << std::endl;
+		std::cout << "Row conflicts: ";
+		for (auto x: til.rowConflict)
+		{
+			std::cout << x << ", ";
+		}
+		std::cout << std::endl << "Col conflicts: ";
+		for (auto x: til.colConflict)
+		{
+			std::cout << x << ", ";
+		}
+		std::cout << std::endl;
+	}
 }
 
 void	Node::buildTiles()
 {
 	this->_tiles.reserve(_size*_size);
-	for (int i =0; i < _size*_size; i++)
+	int	len = (int)(_size*_size);
+	for (int i =0; i < len; i++)
 	{
 		s_tile	new_tile;
 
 		new_tile.val = _graph[i];
-		for (int j = 0; j < _size*_size; j++)
+		for (int j = 0; j < len; j++)
 		{
 			if (_goal[j] == new_tile.val)
 			{
@@ -50,45 +72,47 @@ void	Node::buildTiles()
 		new_tile.isRightRow = new_tile.goalIdx / _size == i / _size;
 		_tiles.push_back(new_tile);
 	}
-	for (int line = 0; line < _size; line++)
+	for (int line = 0; line < (int)_size; line++)
 	{
-		for (int idx = 0; idx < _size; idx++)
+		for (int idx = 0; idx < (int)_size; idx++)
 		{
-			if (!_tiles[line*_size + idx].isRightRow)
+			tile& t = _tiles[line*_size + idx];
+			if (t.val == 0 || !t.isRightRow)
 				continue;
-			for (int j = idx+1; j < _size; j++)
+			for (int j = idx+1; j < (int)_size; j++)
 			{
-
-				if (!_tiles[line*_size + j].isRightRow)
+				tile&	s = _tiles[line*_size + j];
+				if (s.val == 0 || !s.isRightRow)
 					continue;
-				if (_tiles[line*_size + idx].goalIdx % _size < _tiles[line*_size + j].goalIdx % _size)
+				if (t.goalIdx % (int)_size > s.goalIdx % (int)_size)
 				{
-					_tiles[line*_size + idx].rowConflict.push_back(_tiles[line*_size + j].val);
-					_tiles[line*_size + j].rowConflict.push_back(_tiles[line*_size + idx].val);
+					t.rowConflict.insert(s.val);
+					s.rowConflict.insert(t.val);
 				}
 			}
 		}
 	}
-	for (int col = 0; col < _size; col++)
+	for (int col = 0; col < (int)_size; col++)
 	{
-		for (int idx = 0; idx < _size; idx++)
+		for (int idx = 0; idx < (int)_size; idx++)
 		{
-			if (!_tiles[idx*_size + col].isRightCol)
+			tile& t = _tiles[idx*_size + col];
+			if (t.val == 0 || !t.isRightCol )
 				continue;
-			for (int j = idx+1; j < _size; j++)
+			for (int j = idx+1; j < (int)_size; j++)
 			{
-				if (!_tiles[j*_size + col].isRightCol)
+				tile&	s = _tiles[j*_size + col];
+				if (s.val == 0 || !s.isRightCol)
 					continue;
-				if (_tiles[idx*_size + col].goalIdx / _size > _tiles[j*_size + col].goalIdx / _size )
+				if (t.goalIdx / _size > s.goalIdx / _size)
 				{
-					_tiles[idx*_size + col].colConflict.push_back( _tiles[j*_size + col].val);
-					_tiles[j*_size + col].colConflict.push_back( _tiles[idx*_size + col].val);
-				}	
+					t.colConflict.insert( s.val);
+					s.colConflict.insert( t.val);
+				}
+				
 			}
 		}
-	}
-	
-	
+	}	
 }
 
 Node::Node()
@@ -278,10 +302,10 @@ void Node::h1(s_coord &dest)
 
 
 //Manhattan + linear conflict
-void	Node::h2(s_coord &dest)
-{
+// void	Node::h2(s_coord &dest)
+// {
 
-}
+// }
 
 // Check number of correctly placed tiles
 // void	Node::h(const Node& goal) {
@@ -394,3 +418,197 @@ void	Node::debug()
 	std::cout << "g & h = " << this->getG() << " & " << this->getH();
 	std::cout << "/n======\n";
  }
+
+
+int	Node::computeRowConflict(int i)
+{
+	int	line = i*(int)_size;
+	std::vector<int>	lc(_size, 0);
+	int	max = -1;
+	int	idxmax = 0;
+	int	conflictsCount = 0;
+
+	for (int idx = 0; idx < (int)_size; idx++)
+	{
+		lc[idx] = _tiles[line+idx].rowConflict.size();
+		if (lc[idx] > max)
+		{
+			max = lc[idx];
+			idxmax = idx;
+		}
+	}
+	while (max > 0)
+	{
+		int	val = _tiles[line + idxmax].val;
+		lc[idxmax] = 0;
+		max = -1;
+		idxmax = 0;
+		for (int j = 0; j < (int)_size; j++)
+		{
+			if (_tiles[line+j].rowConflict.count(val))
+				lc[j] -= 1;
+			if (lc[j] > max)
+			{
+				max = lc[j];
+				idxmax = j;
+			}
+		}
+		conflictsCount += 1;
+	}
+	std::cout << "Conflict for line " << i << " => " << conflictsCount << std::endl;
+	return (conflictsCount);
+}
+
+int	Node::computeColConflict(int j)
+{
+	std::vector<int>	lc(_size, 0);
+	int max = -1;
+	int idxmax = 0;
+	int conflictsCount = 0;
+
+	for (int line = 0; line < (int)_size; line++)
+	{
+		lc[line] = _tiles[line*_size + j].colConflict.size();
+		if (lc[line] > max)
+		{
+			max = lc[line];
+			idxmax = line;
+		}
+	}
+	while (max > 0)
+	{
+		int val = _tiles[idxmax*_size + j].val;
+		max = -1;
+		lc[idxmax] = 0;
+		idxmax = 0;
+		for (int line = 0; line < (int)_size; line++)
+		{
+			if (_tiles[line*_size + j].colConflict.count(val))
+			{
+				lc[line] -= 1;
+			}
+			if (lc[line] > max)
+			{
+				max = lc[line];
+				idxmax = line;
+			}
+		}
+		conflictsCount += 1;
+	}
+	std::cout << "Conflict for col " << j << " => " << conflictsCount << std::endl;
+	return (conflictsCount);
+}
+
+void	Node::computeLinearConflicts()
+{
+	int	conflicts = 0;
+
+	for (int line = 0; line < (int)_size; line++)
+	{
+		conflicts += computeRowConflict(line);
+	}
+	for (int col = 0; col < (int)_size; col++)
+	{
+		conflicts += computeColConflict(col);
+	}
+}
+
+bool	Node::isRowConflict(int idx1, int idx2)
+{
+	if (idx1 / _size != idx2 / _size)
+		return false;
+	tile& t1 = _tiles[idx1];
+	tile& t2 = _tiles[idx2];
+	if (!t1.isRightRow || !t2.isRightRow ||  t1.val == 0 || t2.val == 0)
+		return false;
+	if (idx1 % _size < idx2 % _size)
+	{
+		return (t1.goalIdx % _size > t2.goalIdx % _size);
+	}
+	else{
+		return (t2.goalIdx % _size < t2.goalIdx % _size);
+	}
+}
+
+bool	Node::isColConflict(int idx1, int idx2)
+{
+	if (idx1 % _size != idx2 % _size)
+		return false;
+	tile& t1 = _tiles[idx1];
+	tile& t2 = _tiles[idx2];
+	if (!t1.isRightCol || !t2.isRightCol || t1.val == 0 || t2.val == 0)
+		return false;
+	if (idx1 / _size < idx2 / _size)
+	{
+		return (t1.goalIdx / _size > t2.goalIdx / _size);
+	}
+	else
+	{
+		return (t1.goalIdx / _size < t2.goalIdx / _size);
+	}
+}
+
+
+void	Node::updateTileLine(int line, int idx, int oldval)
+{
+	_tiles[line*_size + idx].rowConflict.clear();
+	for (int jdx = 0; jdx < (int)_size; jdx++)
+	{
+		if (jdx == idx)
+			continue;
+		_tiles[line*_size + jdx].rowConflict.erase(oldval);
+		std::cout << oldval << " erased from rowconflict for " << _tiles[line + jdx].val << std::endl;
+		if (isRowConflict(line+idx, line+jdx))
+		{
+			_tiles[line*_size + idx].rowConflict.insert(_tiles[line*_size+jdx].val);
+			_tiles[line*_size+jdx].rowConflict.insert(_tiles[line*_size+idx].val);
+		}
+	}
+}
+
+void	Node::updateTileCol(int col, int idx, int oldval)
+{
+	_tiles[idx*_size + col].colConflict.clear();
+	for (int line = 0; line < (int)_size; line++)
+	{
+		if (line == idx)
+			continue;
+		_tiles[line*_size + col].colConflict.erase(oldval);
+		if (isColConflict(line*_size+col, idx*_size+col))
+		{
+			_tiles[line*_size + col].colConflict.insert(_tiles[idx*_size+col].val);
+			_tiles[idx*_size + col].colConflict.insert(_tiles[line*_size+col].val);
+		}
+	}
+
+}
+ //called when swapping two tiles when generating children -> will compute the two lines or columns affected by the swap
+void Node::updateTile(int idx1, int idx2)
+{
+	int oldval1 = _tiles[idx1].val;
+	int oldval2 = _tiles[idx2].val;
+	std::swap(_tiles[idx1], _tiles[idx2]);
+	_tiles[idx1].isRightCol = idx1 %  _size == _tiles[idx1].goalIdx % _size;
+	_tiles[idx1].isRightRow = idx1 / _size == _tiles[idx1].goalIdx / _size;
+	_tiles[idx2].isRightCol = idx2 %  _size == _tiles[idx2].goalIdx % _size;
+	_tiles[idx2].isRightRow = idx2 / _size == _tiles[idx2].goalIdx / _size;
+
+	if (idx1 / _size == idx2 / _size) // on a change de colomne
+	{
+		
+		std::cout << idx1 % _size <<" updating cols\n";
+		updateTileCol(idx1 % _size, idx1 / _size, oldval1);
+		updateTileCol(idx2 % _size, idx2 / _size, oldval2);
+	}
+	else{ // on a change de ligne
+		std::cout << idx1 % _size << " updating lines\n";
+		updateTileLine(idx1 / _size, idx1 % _size, oldval1);
+		updateTileLine(idx2 / _size, idx2 % _size, oldval2);
+	}
+}
+
+
+void	Node::debugSwapTile(int idx1, int idx2)
+{
+	updateTile(idx1, idx2);
+}

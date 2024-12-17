@@ -23,7 +23,7 @@ void	NPuzzle::run(char* filepath)
 	else
 		std::cout << "Puzzle is unsolvable\n";
 	// Display start
-	Node nodeDisplay = Node(_start, _goal, _size, 0);
+	Node nodeDisplay = Node(_start, _goal, _size, 0, 0);
 	std::cout << "Start:\n";
 	nodeDisplay.display(0);
 	std::cout << "\n";
@@ -38,7 +38,7 @@ void	NPuzzle::run(char* filepath)
 
 
 		if (_algoType[type]) {
-			Node *node = new Node(_start, _goal, _size, type);
+			Node *node = new Node(_start, _goal, _size, type, 0);
 
 			auto start_time = std::chrono::high_resolution_clock::now();
 

@@ -8,6 +8,7 @@
 # include <iomanip>
 # include <sstream>
 # include "utils.hpp"
+# include <set>
 
 # define	INFINITY_F std::numeric_limits<float>::infinity()
 
@@ -48,8 +49,8 @@ typedef struct tile
 	uint16_t	goalIdx;
 	bool		isRightCol;
 	bool		isRightRow;
-	std::vector<uint16_t>	rowConflict;
-	std::vector<uint16_t>	colConflict;	
+	std::set<uint16_t>	rowConflict;
+	std::set<uint16_t>	colConflict;	
 
 } s_tile;
 
@@ -59,6 +60,7 @@ class Node {
 
 		uint32_t				_g;
 		uint32_t				_h;
+		uint32_t				_hManhattan; // used for linear conflict
 		s_coord					_pos;
 		std::vector<uint16_t>	_graph;
 		Node*					_parent;
@@ -72,6 +74,17 @@ class Node {
 		void	swapTiles(s_coord a, s_coord b);
 		
 		void	buildTiles();
+		int		computeRowConflict(int i);
+		int		computeColConflict(int i);
+		void	updateTileLine(int line, int idx, int oldval);
+		void	updateTileCol(int Col, int idx, int oldval);
+		void	updateTile(int idx1, int idx2);
+		
+		bool	isColConflict(int idx1, int idx2);
+		bool	isRowConflict(int idx1, int idx2);
+
+		
+		
 		
 		static int		_algoType;
 		static int		_heuristic;
@@ -125,6 +138,10 @@ class Node {
 		{
 			return (a->_graph);
 		}
+
+		void	debugTiles();
+		void	computeLinearConflicts();
+		void	debugSwapTile(int idx1, int idx2);
 };
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node);
