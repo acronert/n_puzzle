@@ -28,6 +28,7 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 			break;
 		}
 	}
+	_lc = 0;
 	if (_heuristicType == LINEAR_CONFLICT)
 		this->buildTiles();
 	this->h(this->_pos);
@@ -131,6 +132,8 @@ Node::Node(const Node& other) {
 	_graph = other._graph;
 	_pos = other._pos;
 	_parent = other._parent;
+	_tiles = other._tiles;
+	_lc = 0;
 }
 
 Node& Node::operator=(const Node& other) {
@@ -140,6 +143,8 @@ Node& Node::operator=(const Node& other) {
 		_graph = other._graph;
 		_pos = other._pos;
 		_parent = other._parent;
+		_tiles = other._tiles;
+		_lc = 0;
 	}
 	return *this;
 }
@@ -249,20 +254,26 @@ int	Node::distanceToGoal(int src) const {
 
 void	Node::h(s_coord &dest) {
 	if (_heuristicType == MANHATTAN)
-		manhattanDistance(dest);
+		_h = manhattanDistance(dest);
 	else if (_heuristicType == MISPLACED)
-		misplacedTiles(dest);
+		_h = misplacedTiles(dest);
 	else if (_heuristicType == GASHNIG)
-		gashnig(dest);
+		_h = gashnig(dest);
+	else if (_heuristicType == LINEAR_CONFLICT)
+	{	
+		_h = manhattanDistance(dest);
+		updateTile(index(this->_pos), index(dest));
+		_lc = computeLinearConflicts();
+	}
 
 }
 
 //Manhattan distance
-void	Node::manhattanDistance(s_coord &dest) {
+uint32_t	Node::manhattanDistance(s_coord &dest) {
 
+	uint32_t newh = 0;
 	if (this->_parent == nullptr){
 		int graph_size = (int)this->_graph.size();
-		this->_h = 0;
 		for (int src = 0; src < graph_size; src++) {
 			if (!this->_graph[src])
 				continue;
@@ -270,27 +281,31 @@ void	Node::manhattanDistance(s_coord &dest) {
 		}
 	}
 	else{
-		this->_h -= this->_parent->distanceToGoal(index(dest));
-		this->_h += this->distanceToGoal((index(this->_pos)));
+		newh = this->_h;
+		newh -= this->_parent->distanceToGoal(index(dest));
+		newh += this->distanceToGoal((index(this->_pos)));
 	}
+	return newh;
 }
 
 // Misplaced tiles
-void Node::misplacedTiles(s_coord &dest)
+uint32_t Node::misplacedTiles(s_coord &dest)
 {
+	uint32_t	newh = 0;
 	if (this->_parent == nullptr){
-		this->_h = 0;
 		int graph_size = _size * _size;
 		for (int i = 0; i < graph_size; i++)
 		{
 			if (this->_graph[i] != _goal[i])
-				_h++;
+				newh++;
 		}
 	}
 	else{
-		this->_h -= (this->_parent->_graph[index(dest)] == _goal[index(dest)]);
-		this->_h += this->_graph[index(this->_pos)] == _goal[index(this->_pos)];
+		newh = this->_h;
+		newh -= (this->_parent->_graph[index(dest)] == _goal[index(dest)]);
+		newh += this->_graph[index(this->_pos)] == _goal[index(this->_pos)];
 	}
+	return newh;
 }
 
 
@@ -329,13 +344,12 @@ void Node::misplacedTiles(s_coord &dest)
 // }
 
 // Gaschnig
-void	Node::gashnig(s_coord &dest) {
+uint32_t	Node::gashnig(s_coord &dest) {
 	std::vector<uint16_t> tmp = _graph;
 	int	blank_idx = index(this->_pos);
-
+	uint32_t newh = 0;
 	// START H
 	if (this->_parent == nullptr) {
-		_h = 0;
 		while (tmp != _goal) {
 			if (tmp[blank_idx] == _goal[blank_idx])	// emptytile is where it should be
 			{
@@ -358,24 +372,26 @@ void	Node::gashnig(s_coord &dest) {
 					}
 				}
 			}
-			_h++;
+			newh++;
 		}
 	}
 	else {
+		newh = _h;
 		// if parent 0 was placed
 		if (_goal[index(dest)] == 0)
-			_h--;
+			newh--;
 		// else if child 0 is placed
 		else if (_goal[index(_pos)] == 0)
-			_h++;
+			newh++;
 
 		// if moved tile was placed
 		if (_graph[index(_pos)] == _goal[index(dest)])
-			_h++;
+			newh++;
 		// else if moved tile is placed
 		if (_graph[index(_pos)] == _goal[index(_pos)])
-			_h--;
+			newh--;
 	}
+	return (newh);
 }
 
 void	Node::display(int offset_x) {
@@ -451,7 +467,7 @@ void	Node::display(int offset_x) {
 size_t	Node::getSize() const					{ return _size; }
 const std::vector<uint16_t>	&Node::getGraph() const	{ return _graph; }
 uint32_t	Node::getG() const					{ return _g; }
-uint32_t	Node::getH() const					{ return _h; }
+uint32_t	Node::getH() const					{ return _h+_lc; }
 
 uint32_t	Node::getF() const
 {
@@ -516,7 +532,6 @@ int	Node::computeRowConflict(int i)
 		}
 		conflictsCount += 1;
 	}
-	std::cout << "Conflict for line " << i << " => " << conflictsCount << std::endl;
 	return (conflictsCount);
 }
 
@@ -560,7 +575,7 @@ int	Node::computeColConflict(int j)
 	return (conflictsCount);
 }
 
-void	Node::computeLinearConflicts()
+int		Node::computeLinearConflicts()
 {
 	int	conflicts = 0;
 
@@ -572,6 +587,7 @@ void	Node::computeLinearConflicts()
 	{
 		conflicts += computeColConflict(col);
 	}
+	return (conflicts);
 }
 
 bool	Node::isRowConflict(int idx1, int idx2)

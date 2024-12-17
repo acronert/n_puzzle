@@ -39,7 +39,8 @@ enum
 {
 	MANHATTAN,
 	MISPLACED,
-	GASHNIG
+	GASHNIG,
+	LINEAR_CONFLICT
 };
 
 typedef struct	coord {
@@ -64,7 +65,7 @@ class Node {
 
 		uint32_t				_g;
 		uint32_t				_h;
-		uint32_t				_hManhattan; // used for linear conflict
+		uint32_t				_lc;
 		s_coord					_pos;
 		std::vector<uint16_t>	_graph;
 		Node*					_parent;
@@ -81,6 +82,7 @@ class Node {
 		void	buildTiles();
 		int		computeRowConflict(int i);
 		int		computeColConflict(int i);
+		int		computeLinearConflicts();
 		void	updateTileLine(int line, int idx, int oldval);
 		void	updateTileCol(int Col, int idx, int oldval);
 		void	updateTile(int idx1, int idx2);
@@ -130,10 +132,10 @@ class Node {
 		typedef void (Node::*heuristic_func)(void);
 		heuristic_func	heu[3];
 
-		void	h(s_coord &dest);
-		void	manhattanDistance(s_coord &dest);
-		void 	misplacedTiles(s_coord &dest);
-		void	gashnig(s_coord &dest);
+		void			h(s_coord &dest);
+		uint32_t		manhattanDistance(s_coord &dest);
+		uint32_t 		misplacedTiles(s_coord &dest);
+		uint32_t		gashnig(s_coord &dest);
 
 		bool	isGoal() const;
 		void	display(int offset_x);
@@ -144,7 +146,7 @@ class Node {
 		}
 
 		void	debugTiles();
-		void	computeLinearConflicts();
+	
 		void	debugSwapTile(int idx1, int idx2);
 };
 
