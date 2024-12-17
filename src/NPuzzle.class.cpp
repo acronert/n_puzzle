@@ -173,6 +173,8 @@ void	NPuzzle::parseOptions(char* option) {
 					_heuristicType = 1;
 				else if (option[i] == '2')
 					_heuristicType = 2;
+				else if (option[i] == '3')
+					_heuristicType = 3;
 				else
 					throw std::invalid_argument("unknow heuristic");
 			}

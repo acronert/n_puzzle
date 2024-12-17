@@ -277,7 +277,7 @@ uint32_t	Node::manhattanDistance(s_coord &dest) {
 		for (int src = 0; src < graph_size; src++) {
 			if (!this->_graph[src])
 				continue;
-			this->_h += distanceToGoal(src);
+			newh += distanceToGoal(src);
 		}
 	}
 	else{
@@ -472,9 +472,9 @@ uint32_t	Node::getH() const					{ return _h+_lc; }
 uint32_t	Node::getF() const
 {
 	if (_algoType == STANDARD)
-		return _g + _h;
+		return _g + _h + _lc;
 	else if (_algoType == GREEDY)
-		return _h;
+		return _h + _lc;
 	else
 		return _g;
 }
@@ -571,7 +571,6 @@ int	Node::computeColConflict(int j)
 		}
 		conflictsCount += 1;
 	}
-	std::cout << "Conflict for col " << j << " => " << conflictsCount << std::endl;
 	return (conflictsCount);
 }
 
@@ -634,7 +633,6 @@ void	Node::updateTileLine(int line, int idx, int oldval)
 		if (jdx == idx)
 			continue;
 		_tiles[line*_size + jdx].rowConflict.erase(oldval);
-		std::cout << oldval << " erased from rowconflict for " << _tiles[line + jdx].val << std::endl;
 		if (isRowConflict(line+idx, line+jdx))
 		{
 			_tiles[line*_size + idx].rowConflict.insert(_tiles[line*_size+jdx].val);
@@ -673,12 +671,10 @@ void Node::updateTile(int idx1, int idx2)
 	if (idx1 / _size == idx2 / _size) // on a change de colomne
 	{
 		
-		std::cout << idx1 % _size <<" updating cols\n";
 		updateTileCol(idx1 % _size, idx1 / _size, oldval1);
 		updateTileCol(idx2 % _size, idx2 / _size, oldval2);
 	}
 	else{ // on a change de ligne
-		std::cout << idx1 % _size << " updating lines\n";
 		updateTileLine(idx1 / _size, idx1 % _size, oldval1);
 		updateTileLine(idx2 / _size, idx2 % _size, oldval2);
 	}
