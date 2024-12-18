@@ -16,7 +16,6 @@ class Solution {
 		int							_moveCount;
 		std::chrono::milliseconds	_duration;
 
-		
 	public:
 		Solution(std::vector<Node> path, int loopCount, int maxNode);
 		~Solution();

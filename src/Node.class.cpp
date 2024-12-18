@@ -7,9 +7,6 @@ int		Node::_algoType = 0;
 int		Node::_heuristicType = 0;
 std::vector<uint16_t>	Node::_goal = {};
 
-
-// COPLIEN /////////////////////////////////////////////////////////////////////
-
 Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuriType) :
 	_g(0), _h(0), _graph(graph), _parent(nullptr), _tiles()
 {
@@ -17,7 +14,6 @@ Node::Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size,
 	Node::_size = size;
 	Node::_algoType = algoType;
 	Node::_heuristicType = heuriType;
-
 
 	// Search '0' tile position
 	for (int i = 0; i < (int)_graph.size(); i++) {
@@ -118,13 +114,9 @@ void	Node::buildTiles()
 	this->h(this->_pos);
 }
 
-Node::Node()
-{
-}
+Node::Node() {}
 
-Node::~Node() {
-	//std::cout << "destructor called on adress: " << this << std::endl;
-}
+Node::~Node() {}
 
 Node::Node(const Node& other) {
 	_g = other._g;
@@ -149,8 +141,6 @@ Node& Node::operator=(const Node& other) {
 	return *this;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
 std::vector<Node*>	Node::getChildren(PoolStack &pool){
 	std::vector<Node*>	children;
 	const s_coord directions[] = { {0, -1}, {0, 1}, {-1, 0}, {1, 0} };
@@ -163,24 +153,14 @@ std::vector<Node*>	Node::getChildren(PoolStack &pool){
 
 		// if out of range, continue
 		if (dest.x < 0 || dest.x >= (int)_size || dest.y < 0 || dest.y >= (int)_size)
-		{
 			continue;
-		}
 
 		// if direction is parent && not GREEDY
 		if (this->_parent
 			&& this->_parent->_pos.x == dest.x
 			&& this->_parent->_pos.y == dest.y)
-			{
 				continue;
-			}
 
-
-		// verifier si le node existe deja
-			// si son g est meilleur
-				// update ( And dont create a child)
-			// else, create child
-		//Node	*child = new Node(*this);
 		Node *child = pool.next();
 		*child = *this;
 
@@ -257,8 +237,8 @@ void	Node::h(s_coord &dest) {
 		_h = manhattanDistance(dest);
 	else if (_heuristicType == MISPLACED)
 		_h = misplacedTiles(dest);
-	else if (_heuristicType == GASHNIG)
-		_h = gashnig(dest);
+	else if (_heuristicType == GASCHNIG)
+		_h = gaschnig(dest);
 	else if (_heuristicType == LINEAR_CONFLICT)
 	{	
 		_h = manhattanDistance(dest);
@@ -309,42 +289,8 @@ uint32_t Node::misplacedTiles(s_coord &dest)
 }
 
 
-// int	Node::isRightCol(int idx)
-// {
-// 	uint16_t	val = this->_graph[idx];
-// 	int			goalidx = 0;
-// 	for (goalidx = 0; goalidx < this->_size*this->_size; goalidx++)
-// 	{
-// 		if (this->_goal[goalidx] == val)
-// 			break;
-// 	}
-// 	if (idx % this->_size != goalidx % this->_size)
-// 		return (0);
-// 	return ((goalidx / this->_size) - (idx / this->_size));
-// }
-
-
-//Manhattan + linear conflict
-// void	Node::h2()
-// {
-	// this->_h = 0;
-// }
-
-// Check number of correctly placed tiles
-// void	Node::h(const Node& goal) {
-// 	float	new_h = 0;
-// 	int graph_size = (int) this->_graph.size();
-// 	for (int i = 0; i < graph_size; i++) {
-// 		if (!this->_graph[i])
-// 			continue;
-// 		else if (this->_graph[i] != _goal[i])
-// 			new_h += 1;
-// 	}
-// 	this->_h = new_h;
-// }
-
 // Gaschnig
-uint32_t	Node::gashnig(s_coord &dest) {
+uint32_t	Node::gaschnig(s_coord &dest) {
 	std::vector<uint16_t> tmp = _graph;
 	int	blank_idx = index(this->_pos);
 	uint32_t newh = 0;

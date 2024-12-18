@@ -15,15 +15,10 @@
 class Node;
 
 std::vector<uint16_t>	build_goal(uint16_t size);
-
 std::vector<uint16_t>	parse(char* filepath);
-
-void	replay(std::vector<Node> path);
-
-std::string	formatSize(size_t bytes);
-
+void	                replay(std::vector<Node> path);
+std::string	            formatSize(size_t bytes);
 std::vector<uint16_t>	randomVec(uint16_t size);
-
-void    usage();
+void                    usage();
 
 #endif

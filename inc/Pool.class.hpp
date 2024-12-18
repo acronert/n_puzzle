@@ -3,9 +3,12 @@
 
 #include <vector>
 #include "Node.class.hpp"
+#include "stdlib.h"
+#include "stdio.h"
+#include "string.h"
 
 #define POOL_SIZE 1000000
-#define MAX_ALLOC 30
+#define MAX_MEMORY_KB 10000000
 
 class Pool
 {
@@ -27,7 +30,8 @@ class PoolStack
 	private:
 		std::vector<Pool*>	_poolStack;
 		std::vector<Node*>	_recycle;
-		std::size_t				_size;
+		std::size_t			_size;
+		unsigned long long	_memoryUsed;
 
 	public:
 		PoolStack();
@@ -37,6 +41,7 @@ class PoolStack
 		};
 		Node*	next();
 		void	recycle(Node* p);
+		void	updateMemoryUsed();
 };
 
 #endif

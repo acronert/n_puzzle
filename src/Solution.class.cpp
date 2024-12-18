@@ -6,10 +6,7 @@ Solution::Solution(std::vector<Node> path, int loopCount, int maxNode):
 	_size = path[0].getSize();
 }
 
-Solution::~Solution()
-{
-
-}
+Solution::~Solution() {}
 
 void	Solution::displayStart(int offset_x) {
 	std::cout << "Start :\n";
