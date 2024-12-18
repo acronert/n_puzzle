@@ -227,14 +227,12 @@ Solution	NPuzzle::_aStar(Node *start)
 	while (openSet.getSize() > 0)
 	{
 		loop_count++;
+		
 		// if (closeSet.size() > max_nodes)
-		// {
 		// 	max_nodes = closeSet.size();
-		// }
 		if (openSet.getSize() > max_nodes)
-		{
 			max_nodes = openSet.getSize();
-		}
+
 		Node*	current = openSet.popMin();
 		if (current->isGoal())
 		{
