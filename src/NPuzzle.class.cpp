@@ -199,7 +199,13 @@ void	NPuzzle::parse(int argc, char** argv) {
 		}
 	}
 	if (!input_present)
-		throw std::invalid_argument("No input given");
+	{
+		usage();
+		std::cout << "\nNo input, generating a random puzzle of size 3" << std::endl;
+		_start = randomVec(9);
+		_goal = build_goal(3);
+		_size = 3;
+	}
 	if (!_algoType[0] && !_algoType[1] && !_algoType[2])
 		_algoType[0] = true;
 
@@ -262,6 +268,7 @@ Solution	NPuzzle::_aStar(Node *start)
 						*search->second = *child;
 					}
 				}
+				pool.recycle(child);
 			}
 			else //jamais vu on ajoute aux deux sets
 			{

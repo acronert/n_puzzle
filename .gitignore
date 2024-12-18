@@ -3,3 +3,5 @@ n_puzzle
 */*.o
 .vscode/
 input.txt
+./build
+*.d

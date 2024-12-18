@@ -22,4 +22,8 @@ void	replay(std::vector<Node> path);
 
 std::string	formatSize(size_t bytes);
 
+std::vector<uint16_t>	randomVec(uint16_t size);
+
+void    usage();
+
 #endif
