@@ -41,6 +41,8 @@ void	NPuzzle::run(int argc, char** argv)
 			strHeuristic = "Misplaced Tiles";
 		else if (_heuristicType == GASHNIG)
 			strHeuristic = "Gashnig";
+		else if (_heuristicType == LINEAR_CONFLICT)
+			strHeuristic = "Linear Conflict";
 
 		if (_algoType[aType]) {
 
