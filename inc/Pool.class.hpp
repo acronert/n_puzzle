@@ -28,6 +28,7 @@ class PoolStack
 		std::vector<Pool*>	_poolStack;
 		std::vector<Node*>	_recycle;
 		std::size_t				_size;
+		
 
 	public:
 		PoolStack();

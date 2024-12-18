@@ -27,6 +27,7 @@ PoolStack::PoolStack()
 {
 	_poolStack.push_back(new Pool());
 	_size = 1;
+	_count = 0;
 }
 
 Node*	PoolStack::next()
