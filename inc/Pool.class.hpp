@@ -5,7 +5,7 @@
 #include "Node.class.hpp"
 
 #define POOL_SIZE 1000000
-#define MAX_ALLOC 40
+#define MAX_ALLOC 30
 
 class Pool
 {
@@ -19,12 +19,14 @@ class Pool
 		Pool();
 		~Pool();
 		Node*	next();
+
 };
 
 class PoolStack
 {
 	private:
 		std::vector<Pool*>	_poolStack;
+		std::vector<Node*>	_recycle;
 		std::size_t				_size;
 
 	public:
@@ -34,6 +36,7 @@ class PoolStack
 				delete it;
 		};
 		Node*	next();
+		void	recycle(Node* p);
 };
 
 #endif

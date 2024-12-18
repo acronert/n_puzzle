@@ -8,6 +8,7 @@
 # include <iomanip>
 # include <sstream>
 # include "utils.hpp"
+# include <set>
 
 # define	INFINITY_F std::numeric_limits<float>::infinity()
 
@@ -38,7 +39,8 @@ enum
 {
 	MANHATTAN,
 	MISPLACED,
-	GASHNIG
+	GASHNIG,
+	LINEAR_CONFLICT
 };
 
 typedef struct	coord {
@@ -46,11 +48,24 @@ typedef struct	coord {
 	int8_t 	y;
 } s_coord;
 
+typedef struct tile
+{
+	uint16_t	val;
+	uint16_t	goalIdx;
+	bool		isRightCol;
+	bool		isRightRow;
+	std::set<uint16_t>	rowConflict;
+	std::set<uint16_t>	colConflict;	
+
+} s_tile;
+
+
 class Node {
 	private:
 
 		uint32_t				_g;
 		uint32_t				_h;
+		uint32_t				_lc;
 		s_coord					_pos;
 		std::vector<uint16_t>	_graph;
 		Node*					_parent;
@@ -63,6 +78,24 @@ class Node {
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
 		void	swapTiles(s_coord a, s_coord b);
+		
+		void	buildTiles();
+		int		computeRowConflict(int i);
+		int		computeColConflict(int i);
+		int		computeLinearConflicts();
+		void	updateTileLine(int line, int idx, int oldval);
+		void	updateTileCol(int Col, int idx, int oldval);
+		void	updateTile(int idx1, int idx2);
+		
+		bool	isColConflict(int idx1, int idx2);
+		bool	isRowConflict(int idx1, int idx2);
+
+		// for linear conflicts
+		std::vector<s_tile>	_tiles;
+	
+
+
+
 
 
 	public:
@@ -99,10 +132,10 @@ class Node {
 		typedef void (Node::*heuristic_func)(void);
 		heuristic_func	heu[3];
 
-		void	h(s_coord &dest);
-		void	manhattanDistance(s_coord &dest);
-		void 	misplacedTiles(s_coord &dest);
-		void	gashnig(s_coord &dest);
+		void			h(s_coord &dest);
+		uint32_t		manhattanDistance(s_coord &dest);
+		uint32_t 		misplacedTiles(s_coord &dest);
+		uint32_t		gashnig(s_coord &dest);
 
 		bool	isGoal() const;
 		void	display(int offset_x);
@@ -111,6 +144,10 @@ class Node {
 		{
 			return (a->_graph);
 		}
+
+		void	debugTiles();
+	
+		void	debugSwapTile(int idx1, int idx2);
 };
 
 // std::ostream&	operator<<(std::ostream& os, const Node& node);

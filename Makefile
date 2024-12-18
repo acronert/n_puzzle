@@ -8,9 +8,11 @@ SRCS		=	./src/main.cpp	\
 				./src/Solution.class.cpp	\
 				./src/NPuzzle.class.cpp ./src/Heap.cpp \
 				./src/Pool.class.cpp
-HEADERS		=	-I ./inc/ -I ./cpp_heap/
+HEADERS		=	-I ./inc/
 
-OBJS		=	$(SRCS:.cpp=.o)
+BUILD_DIR   =	./build
+OBJS		=	$(SRCS:%.cpp=$(BUILD_DIR)/%.o)
+DEP			=	$(OBJS:%.o=%.d)
 
 all:	$(NAME)
 
@@ -18,16 +20,20 @@ $(NAME): $(OBJS)
 	@$(CXX) $(FLAGS) $(OBJS) -o $(NAME)
 	@echo "Compiling $(NAME)"
 
-%.o: %.cpp
-	@$(CXX) $(FLAGS) $(HEADERS) $(LIBS) -c  $< -o $@
+-include $(DEP)
+
+$(BUILD_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
+	@$(CXX) $(FLAGS) -MMD $(HEADERS) -c  $< -o $@
 	@echo "Compiling $<"
 
 clean:
-	@rm -rf $(OBJS)
+	@rm -rf $(OBJS) $(DEP)
 	@echo "Cleaning..."
 
 fclean: clean
 	@rm -rf $(NAME)
+	@rm -rf $(BUILD_DIR)
 
 re: fclean all
 

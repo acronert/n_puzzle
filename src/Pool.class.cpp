@@ -32,6 +32,12 @@ PoolStack::PoolStack()
 Node*	PoolStack::next()
 {
 	Node* pt = nullptr;
+	if (!_recycle.empty())
+	{
+		pt = _recycle.back();
+		_recycle.pop_back();
+		return (pt);
+	}
 	pt = _poolStack.back()->next();
 	if (pt == nullptr)
 	{
@@ -42,4 +48,9 @@ Node*	PoolStack::next()
 		return this->next();
 	}
 	return pt;
+}
+
+void	PoolStack::recycle(Node *p)
+{
+	_recycle.push_back(p);
 }

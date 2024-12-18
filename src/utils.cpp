@@ -71,3 +71,35 @@ std::string	formatSize(size_t bytes) {
 
     return result.str();
 }
+
+
+std::vector<uint16_t>	randomVec(uint16_t size)
+{
+	std::vector<uint16_t>	v;
+
+	for (uint16_t i = 0; i < size; i++)
+	{
+		v.push_back(i);
+	}
+	std::random_device	rd;
+	std::mt19937		g(rd());
+	std::shuffle(v.begin(), v.end(), g);
+	return (v);
+}
+
+void	usage()
+{
+	std::cout << "USAGE :" << std::endl;
+	std::cout << "	./n_puzzle INPUT_FILE [OPTIONS]" << std::endl;
+	std::cout << std::endl;
+	std::cout << "OPTIONS :" << std::endl;
+	std::cout << "	Algorithm: " << std::endl;
+	std::cout << "		-s	standard A*" << std::endl;
+	std::cout << "		-g	greedy A*" << std::endl;
+	std::cout << "		-u	uniform A*" << std::endl;
+	std::cout << "	Heuristics (choose one) :" << std::endl;
+	std::cout << "		-h0	Manhattan Distance" << std::endl;
+	std::cout << "		-h1	Misplaced Tiles" << std::endl;
+	std::cout << "		-h2	Gashnig" << std::endl;
+	std::cout << "		-h3	Linear Conflict" << std::endl;
+}
