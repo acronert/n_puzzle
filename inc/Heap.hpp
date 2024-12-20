@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <Node.class.hpp>
 #include <map>
+
 struct vecHasher
 {
 	std::size_t operator()(const std::vector<uint16_t> &v) const
@@ -25,20 +26,16 @@ struct vecHasher
 class Heap
 {
 	private:
-
 		std::vector<Node *>	_v;
 		size_t				_size;
-
 		std::unordered_map<std::vector<uint16_t>, size_t, vecHasher>	_indexes;
 
 		void	_heapify_up(size_t idx);
 		void	_heapify_down(size_t idx);
 		void	_makeHeap();
-
 		size_t	_minChild(size_t idx);
 
 	public:
-
 		Heap();
 		~Heap();
 
@@ -48,12 +45,8 @@ class Heap
 		const Node*	operator[](size_t idx) const;
 
 		bool	getIndex(const std::vector<uint16_t> &serial, size_t &idx);
-
 		size_t	getSize() const;
 		void	printHeap();
-
-
 };
-
 
 #endif

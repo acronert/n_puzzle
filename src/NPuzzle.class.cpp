@@ -9,9 +9,7 @@ NPuzzle::NPuzzle() {
 	_heuristicType = 0;
 }
 
-NPuzzle::~NPuzzle() {
-
-}
+NPuzzle::~NPuzzle() {}
 
 void	NPuzzle::run(int argc, char** argv)
 {
@@ -39,8 +37,8 @@ void	NPuzzle::run(int argc, char** argv)
 		std::string strHeuristic = "Manhattan Distance";
 		if (_heuristicType == MISPLACED)
 			strHeuristic = "Misplaced Tiles";
-		else if (_heuristicType == GASHNIG)
-			strHeuristic = "Gashnig";
+		else if (_heuristicType == GASCHNIG)
+			strHeuristic = "Gaschnig";
 		else if (_heuristicType == LINEAR_CONFLICT)
 			strHeuristic = "Linear Conflict";
 
@@ -237,14 +235,12 @@ Solution	NPuzzle::_aStar(Node *start)
 	while (openSet.getSize() > 0)
 	{
 		loop_count++;
+		
 		// if (closeSet.size() > max_nodes)
-		// {
 		// 	max_nodes = closeSet.size();
-		// }
 		if (openSet.getSize() > max_nodes)
-		{
 			max_nodes = openSet.getSize();
-		}
+
 		Node*	current = openSet.popMin();
 		if (current->isGoal())
 		{
@@ -278,7 +274,6 @@ Solution	NPuzzle::_aStar(Node *start)
 				closeSet[child->getGraph()] = child;
 			}
 		}
-
 	}
 	throw std::invalid_argument("No path found");
 }

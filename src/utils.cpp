@@ -100,6 +100,6 @@ void	usage()
 	std::cout << "	Heuristics (choose one) :" << std::endl;
 	std::cout << "		-h0	Manhattan Distance" << std::endl;
 	std::cout << "		-h1	Misplaced Tiles" << std::endl;
-	std::cout << "		-h2	Gashnig" << std::endl;
+	std::cout << "		-h2	Gaschnig" << std::endl;
 	std::cout << "		-h3	Linear Conflict" << std::endl;
 }

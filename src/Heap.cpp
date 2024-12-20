@@ -1,11 +1,9 @@
 #include "Heap.hpp"
 
 
-Heap::Heap() : _v(), _size(0), _indexes()
-{}
+Heap::Heap() : _v(), _size(0), _indexes() {}
 
-Heap::~Heap()
-{}
+Heap::~Heap() {}
 
 void	Heap::insert(Node *newNode)
 {

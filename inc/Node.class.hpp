@@ -39,26 +39,25 @@ enum
 {
 	MANHATTAN,
 	MISPLACED,
-	GASHNIG,
+	GASCHNIG,
 	LINEAR_CONFLICT
 };
 
 typedef struct	coord {
-	int8_t 	x;			// -> 8 bit, +24bit
+	int8_t 	x;
 	int8_t 	y;
 } s_coord;
 
 typedef struct tile
 {
-	uint16_t	val;
-	uint16_t	goalIdx;
-	bool		isRightCol;
-	bool		isRightRow;
+	uint16_t			val;
+	uint16_t			goalIdx;
+	bool				isRightCol;
+	bool				isRightRow;
 	std::set<uint16_t>	rowConflict;
 	std::set<uint16_t>	colConflict;	
 
 } s_tile;
-
 
 class Node {
 	private:
@@ -70,10 +69,13 @@ class Node {
 		std::vector<uint16_t>	_graph;
 		Node*					_parent;
 
-		static size_t		_size;
+		// for linear conflicts
+		std::vector<s_tile>	_tiles;
+		
+		static size_t					_size;
 		static std::vector<uint16_t>	_goal;
-		static int		_algoType;
-		static int		_heuristicType;
+		static int						_algoType;
+		static int						_heuristicType;
 
 		int		distanceToGoal(int src) const;
 		int		index(s_coord pos);
@@ -90,16 +92,7 @@ class Node {
 		bool	isColConflict(int idx1, int idx2);
 		bool	isRowConflict(int idx1, int idx2);
 
-		// for linear conflicts
-		std::vector<s_tile>	_tiles;
-	
-
-
-
-
-
 	public:
-
 		// Coplien
 		Node();
 		Node(std::vector<uint16_t> graph, std::vector<uint16_t> goal, size_t size, int algoType, int heuristicType);
@@ -135,7 +128,7 @@ class Node {
 		void			h(s_coord &dest);
 		uint32_t		manhattanDistance(s_coord &dest);
 		uint32_t 		misplacedTiles(s_coord &dest);
-		uint32_t		gashnig(s_coord &dest);
+		uint32_t		gaschnig(s_coord &dest);
 
 		bool	isGoal() const;
 		void	display(int offset_x);
@@ -146,12 +139,7 @@ class Node {
 		}
 
 		void	debugTiles();
-	
 		void	debugSwapTile(int idx1, int idx2);
 };
 
-// std::ostream&	operator<<(std::ostream& os, const Node& node);
-
 #endif
-
-
