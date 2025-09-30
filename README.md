@@ -22,6 +22,7 @@ Key features include:
 ## 📷 Demo
 
 ![npuzzle_demo](npuzzle_demo.gif) 
+
 *Testing standard and greedy with Manhattan Distance heuristic on a 4 by 4 puzzle*
 
 ---
@@ -37,4 +38,4 @@ Key features include:
 ## ⚙️ Building
 
 ```bash
-make```
+make
