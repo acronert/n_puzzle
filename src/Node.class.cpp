@@ -548,7 +548,7 @@ bool	Node::isRowConflict(int idx1, int idx2)
 		return (t1.goalIdx % _size > t2.goalIdx % _size);
 	}
 	else{
-		return (t2.goalIdx % _size < t2.goalIdx % _size);
+		return (t1.goalIdx % _size < t2.goalIdx % _size);
 	}
 }
 
